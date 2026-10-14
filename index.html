@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة اللاعبين - المتجر ومنصة النشر</title>
+    <style>
+        :root {
+            --bg-color: #0f0f13;
+            --card-bg: #1a1a24;
+            --primary-neon: #00ff88;
+            --secondary-neon: #b700ff;
+            --vip-gold: #ffd700;
+            --text-main: #ffffff;
+            --text-muted: #8892b0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: rgba(26, 26, 36, 0.9);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-neon);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+
+        h1 { margin: 0; font-size: 2rem; color: var(--primary-neon); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--primary-neon);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary-neon);
+            color: #000;
+            box-shadow: 0 0 15px var(--primary-neon);
+        }
+
+        .tab-btn.vip-tab {
+            border-color: var(--vip-gold);
+            color: var(--vip-gold);
+            font-weight: bold;
+        }
+        .tab-btn.vip-tab.active, .tab-btn.vip-tab:hover {
+            background: var(--vip-gold);
+            color: #000;
+            box-shadow: 0 0 15px var(--vip-gold);
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* Grid & Cards */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .game-image {
+            height: 180px;
+            background-image: linear-gradient(45deg, #1a1a24, #2a2a35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid #333;
+        }
+
+        .game-info { padding: 15px; }
+        .game-title { color: var(--secondary-neon); margin: 0 0 10px 0; }
+        
+        .price-tag {
+            color: var(--vip-gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .action-btn {
+            background: transparent;
+            color: var(--primary-neon);
+            border: 2px solid var(--primary-neon);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 90%;
+            margin: 0 auto;
+            display: block;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-neon);
+            color: #000;
+        }
+
+        .buy-btn {
+            color: var(--vip-gold);
+            border-color: var(--vip-gold);
+        }
+        .buy-btn:hover {
+            background: var(--vip-gold);
+        }
+
+        /* Publish Form */
+        .publish-form {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--secondary-neon);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .publish-form input, .publish-form textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--text-muted);
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .publish-form input:focus { border-color: var(--secondary-neon); outline: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>بوابة اللاعبين 🎮</h1>
+    </header>
+
+    <div class="container">
+        <!-- أزرار التنقل بين الأقسام -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showSection('free')">ألعاب مجانية</button>
+            <button class="tab-btn vip-tab" onclick="showSection('vip')">ألعاب مدفوعة VIP 👑</button>
+            <button class="tab-btn" onclick="showSection('publish')">انشر لعبتك 🚀</button>
+        </div>
+
+        <!-- 1. قسم الألعاب المجانية -->
+        <div id="free" class="section active">
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-image">Brawlhalla</div>
+                    <div class="game-info">
+                        <h3 class="game-title">براولهالا</h3>
+                        <p style="color: var(--text-muted);">لعبة قتال منصات مجانية ممتعة جداً.</p>
+                    </div>
+                    <button class="action-btn" onclick="alert('جاري بدء التحميل مجاناً!')">حمل الآن مجاناً</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. قسم الألعاب المدفوعة VIP -->
+        <div id="vip" class="section">
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-image">GTA V Premium</div>
+                    <div class="game-info">
+                        <h3 class="game-title">Grand Theft Auto V</h3>
+                        <p style="color: var(--text-muted);">نسخة كاملة مع فلوس للأونلاين.</p>
+                        <span class="price-tag">السعر: 15 دولار</span>
+                    </div>
+                    <button class="action-btn buy-btn" onclick="buyGame()">شراء اللعبة VIP</button>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-image">Minecraft Original</div>
+                    <div class="game-info">
+                        <h3 class="game-title">Minecraft الاصلية</h3>
+                        <p style="color: var(--text-muted);">حساب أصلي لدخول جميع السيرفرات الخاصة.</p>
+                        <span class="price-tag">السعر: 10 دولار</span>
+                    </div>
+                    <button class="action-btn buy-btn" onclick="buyGame()">شراء اللعبة VIP</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. قسم نشر الألعاب -->
+        <div id="publish" class="section">
+            <div class="publish-form">
+                <h2 style="color: var(--secondary-neon); text-align: center;">ارفع لعبتك على المتجر!</h2>
+                <p style="color: var(--text-muted); text-align: center; margin-bottom: 20px;">
+                    لو برمجت لعبة وعايز الناس تلعبها، اكتب بياناتها هنا وهتنزل على الموقع.
+                </p>
+                <input type="text" placeholder="اسم اللعبة" id="gName">
+                <input type="text" placeholder="رابط اللعبة (لينك التحميل أو اللعب)" id="gLink">
+                <textarea placeholder="وصف اللعبة (اكتب قصة اللعبة أو طريقة اللعب)" rows="4" id="gDesc"></textarea>
+                <button class="action-btn" onclick="publishGame()" style="background: var(--secondary-neon); color: white; border: none;">نشر اللعبة الآن</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // دالة التنقل بين الأقسام
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // دالة الشراء لزر الـ VIP
+        function buyGame() {
+            alert("تم تسجيل طلب الشراء! (يمكنك لاحقاً ربط هذا الزر برقم واتساب الخاص بك لاستلام الأموال عبر فودافون كاش أو بطاقة بنكية).");
+        }
+
+        // دالة نشر اللعبة
+        function publishGame() {
+            let name = document.getElementById('gName').value;
+            let link = document.getElementById('gLink').value;
+            if(name && link) {
+                alert("مبروك! تم إرسال لعبة (" + name + ") للإدارة، وهتظهر في الموقع قريب.");
+                document.getElementById('gName').value = '';
+                document.getElementById('gLink').value = '';
+                document.getElementById('gDesc').value = '';
+            } else {
+                alert("يا مطور، لازم تكتب اسم اللعبة والرابط بتاعها!");
+            }
+        }
+    </script>
+</body>
+</html>
