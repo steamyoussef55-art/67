@@ -122,7 +122,7 @@
                         <h3 class="game-title">براولهالا</h3>
                         <p style="color: var(--text-muted);">لعبة قتال منصات مجانية.</p>
                     </div>
-                    <button class="action-btn" onclick="alert('جاري التحميل...')">حمل الآن مجاناً</button>
+                    <button class="action-btn" onclick="alert('جاري بدء التحميل مجاناً! 🚀')">حمل الآن مجاناً</button>
                 </div>
             </div>
         </div>
@@ -137,7 +137,6 @@
                         <p style="color: var(--text-muted);">النسخة الكاملة مع الأونلاين.</p>
                         <span class="price-tag">السعر: 15 دولار</span>
                     </div>
-                    <!-- زرار الشراء بيفتح شاشة الفيزا -->
                     <button class="action-btn buy-btn" onclick="openVisaModal('Grand Theft Auto V')">شراء بالفيزا 💳</button>
                 </div>
             </div>
@@ -151,10 +150,10 @@
             <p id="game-name-display" style="color: var(--text-muted);"></p>
             
             <div id="payment-form">
-                <input type="text" placeholder="رقم الكارت (16 رقم)" maxlength="16">
+                <input type="text" id="cardNumber" placeholder="رقم الكارت (16 رقم)">
                 <div style="display: flex; gap: 10px;">
-                    <input type="text" placeholder="تاريخ الانتهاء MM/YY">
-                    <input type="text" placeholder="الرقم السري CVV" maxlength="3">
+                    <input type="text" id="expiryDate" placeholder="تاريخ الانتهاء MM/YY">
+                    <input type="text" id="cvv" placeholder="الرقم السري CVV" maxlength="3">
                 </div>
                 <button class="action-btn buy-btn" style="width: 100%;" onclick="processPayment()">تأكيد ودفع</button>
                 <button class="action-btn" style="width: 100%; margin-top: 10px; border-color: #ff4444; color: #ff4444;" onclick="closeVisaModal()">إلغاء</button>
@@ -163,7 +162,7 @@
             <!-- شاشة التحميل الوهمية -->
             <div id="loading-screen" style="display: none;">
                 <div class="loader"></div>
-                <p style="color: var(--primary-neon);">جاري التأكد من الفيزا وسحب الرصيد...</p>
+                <p style="color: var(--primary-neon);">جاري التأكد من صحة الكارت...</p>
             </div>
 
             <!-- شاشة نجاح الدفع وظهور التحميل -->
@@ -185,15 +184,17 @@
             event.target.classList.add('active');
         }
 
-        // دوال الفيزا
         function openVisaModal(gameName) {
             document.getElementById('game-name-display').innerText = "شراء: " + gameName;
             
-            // إعادة ضبط الشاشة
+            // تصفير الخانات
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('cvv').value = '';
+
             document.getElementById('payment-form').style.display = 'block';
             document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('success-screen').style.display = 'none';
-            
             document.getElementById('visa-modal').style.display = 'flex';
         }
 
@@ -202,19 +203,46 @@
         }
 
         function processPayment() {
-            // إخفاء الفورم وإظهار التحميل
+            let card = document.getElementById('cardNumber').value;
+            let cvv = document.getElementById('cvv').value;
+
+            // 1. الكود السري الخاص بيوسف (تخطي الدفع)
+            if (card === "يو 1 2" || card === "يويو") {
+                showSuccessScreen();
+                return;
+            }
+
+            // 2. فحص الفيزا العادية للناس التانية (لازم 16 رقم)
+            let isCardNumberOnly = /^\d+$/.test(card); // يتأكد إنها أرقام بس
+            let isCvvNumberOnly = /^\d+$/.test(cvv);
+
+            if (card.length !== 16 || !isCardNumberOnly) {
+                alert("❌ فشل الدفع: رقم الكارت غير صحيح! يجب أن يتكون من 16 رقم.");
+                return;
+            }
+            
+            if (cvv.length !== 3 || !isCvvNumberOnly) {
+                alert("❌ فشل الدفع: الرقم السري (CVV) غير صحيح! يجب أن يكون 3 أرقام.");
+                return;
+            }
+
+            // لو البيانات مظبوطة، نعرض شاشة التحميل كأنه بيكلم البنك
             document.getElementById('payment-form').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
 
-            // انتظار 3 ثواني (كأن الموقع بيكلم البنك) وبعدين يظهر التحميل
             setTimeout(() => {
-                document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('success-screen').style.display = 'block';
-            }, 3000);
+                showSuccessScreen();
+            }, 2500); // الموقع بيحمل ثانيتين ونص عشان يبان حقيقي
+        }
+
+        function showSuccessScreen() {
+            document.getElementById('payment-form').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('success-screen').style.display = 'block';
         }
 
         function startDownload() {
-            alert('بدأ التحميل! 🚀 (هنا تقدر تحط لينك اللعبة الحقيقي)');
+            alert('بدأ التحميل! 🚀 (تقدر تعدل الكود وتحط لينك التحميل الفعلي هنا)');
         }
     </script>
 </body>
