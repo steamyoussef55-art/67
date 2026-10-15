@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Youssef Store - المتجر المتكامل</title>
     <style>
         :root {
@@ -221,21 +219,29 @@
         function login() {
             let user = document.getElementById('username').value.trim();
             let pass = document.getElementById('password').value.trim();
-            if(user === '' || pass === '') { alert('اكتب الاسم وكلمة المرور!'); return; }
+            
+            if(user === '' || pass === '') { 
+                alert('من فضلك اكتب الاسم وكلمة المرور!'); 
+                return; 
+            }
 
             localStorage.setItem('isLoggedIn', 'true');
             
             if(user === 'YoussefGG.123' && pass === '123') {
-                localStorage.setItem('isAdmin', 'true'); isAdmin = true;
-                alert('أهلاً يا مدير الموقع! أزرار المسح والتعديل اتفعلت ليك.');
+                localStorage.setItem('isAdmin', 'true'); 
+                isAdmin = true;
+                alert('أهلاً يا مدير الموقع! تم تسجيل الدخول بنجاح.');
             } else {
-                localStorage.setItem('isAdmin', 'false'); isAdmin = false;
+                localStorage.setItem('isAdmin', 'false'); 
+                isAdmin = false;
+                alert('تم تسجيل الدخول كعضو عادي.');
             }
 
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('store-section').style.display = 'block';
             document.getElementById('logout-btn').style.display = 'inline-block';
-            renderGames(); renderFriends();
+            renderGames(); 
+            renderFriends();
         }
 
         function logout() {
