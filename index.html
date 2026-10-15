@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- أكواد لجعل الموقع يعمل كتطبيق على الهاتف -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>بوابة اللاعبين - المتجر المتكامل</title>
     <style>
         :root {
@@ -24,14 +22,18 @@
         header {
             background-color: rgba(26, 26, 36, 0.9); padding: 15px 20px;
             border-bottom: 2px solid var(--primary-neon); box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
-        h1 { margin: 0; font-size: 1.8rem; color: var(--primary-neon); }
+        h1 { margin: 0; font-size: 1.5rem; color: var(--primary-neon); }
         
-        #logout-btn {
-            display: none; background: #ff4444; color: white; border: none;
-            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;
+        .header-btns { display: flex; gap: 10px; }
+        .header-btn {
+            background: var(--card-bg); color: var(--text-main); border: 1px solid var(--primary-neon);
+            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
         }
+        .header-btn:hover { background: var(--primary-neon); color: #000; }
+        #logout-btn { display: none; border-color: #ff4444; color: #ff4444; }
+        #logout-btn:hover { background: #ff4444; color: white; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
@@ -39,42 +41,55 @@
         #login-section {
             background: var(--card-bg); padding: 40px; border-radius: 15px;
             max-width: 400px; margin: 50px auto; border: 1px solid var(--secondary-neon);
-            box-shadow: 0 0 20px rgba(183, 0, 255, 0.2); text-align: center;
+            text-align: center;
         }
-        #login-section input {
-            width: 100%; padding: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.5);
-            border: 1px solid var(--text-muted); color: white; border-radius: 8px; box-sizing: border-box;
+        input, textarea, select {
+            width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(0,0,0,0.5);
+            border: 1px solid var(--text-muted); color: white; border-radius: 8px; box-sizing: border-box; font-family: inherit;
         }
-        #login-section input:focus { border-color: var(--primary-neon); outline: none; }
+        input:focus, textarea:focus { border-color: var(--primary-neon); outline: none; }
 
         /* Store Section */
         #store-section { display: none; }
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
         .tab-btn {
             background: transparent; color: var(--text-main); border: 1px solid var(--primary-neon);
-            padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: 0.3s;
+            padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 1rem;
         }
-        .tab-btn.active, .tab-btn:hover { background: var(--primary-neon); color: #000; box-shadow: 0 0 15px var(--primary-neon); }
+        .tab-btn.active { background: var(--primary-neon); color: #000; }
         .tab-btn.vip-tab { border-color: var(--vip-gold); color: var(--vip-gold); font-weight: bold; }
-        .tab-btn.vip-tab.active, .tab-btn.vip-tab:hover { background: var(--vip-gold); color: #000; box-shadow: 0 0 15px var(--vip-gold); }
+        .tab-btn.vip-tab.active { background: var(--vip-gold); color: #000; }
+        .tab-btn.friends-tab { border-color: #00bcd4; color: #00bcd4; }
+        .tab-btn.friends-tab.active { background: #00bcd4; color: #000; }
 
         .section { display: none; }
         .section.active { display: block; }
+        
         .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .game-card { background-color: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #333; padding-bottom: 15px; }
+        .game-card { 
+            background-color: var(--card-bg); border-radius: 15px; overflow: hidden; 
+            border: 1px solid #333; padding-bottom: 15px; position: relative;
+        }
         .game-image {
-            height: 180px; background-image: linear-gradient(45deg, #1a1a24, #2a2a35);
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-            color: var(--text-muted); border-bottom: 1px solid #333;
+            height: 150px; background-image: linear-gradient(45deg, #1a1a24, #2a2a35);
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+            color: var(--text-muted); font-weight: bold;
         }
         .game-info { padding: 15px; }
-        .game-title { color: var(--secondary-neon); margin: 0 0 10px 0; }
-        .price-tag { color: var(--vip-gold); font-weight: bold; font-size: 1.2rem; margin-bottom: 15px; display: block; }
+        .game-title { color: var(--secondary-neon); margin: 0 0 5px 0; }
+        .price-tag { color: var(--vip-gold); font-weight: bold; font-size: 1.1rem; display: block; margin-bottom: 10px; }
+
+        /* زر المسح فوق على اليمين */
+        .delete-btn {
+            display: none; position: absolute; top: 10px; right: 10px;
+            background: #ff4444; color: white; border: none; border-radius: 50%;
+            width: 35px; height: 35px; cursor: pointer; font-size: 1.2rem; line-height: 35px; text-align: center;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
 
         .action-btn {
             background: transparent; color: var(--primary-neon); border: 2px solid var(--primary-neon);
-            padding: 10px; border-radius: 8px; cursor: pointer; width: 90%; margin: 5px auto; display: block;
-            font-weight: bold; transition: 0.3s;
+            padding: 10px; border-radius: 8px; cursor: pointer; width: 90%; margin: 5px auto; display: block; font-weight: bold;
         }
         .action-btn:hover { background: var(--primary-neon); color: #000; }
         .buy-btn { color: var(--vip-gold); border-color: var(--vip-gold); }
@@ -84,32 +99,18 @@
             display: none; background: transparent; color: #ff9800; border: 1px dashed #ff9800;
             padding: 8px; border-radius: 8px; cursor: pointer; width: 90%; margin: 5px auto; font-weight: bold;
         }
-        .edit-btn:hover { background: #ff9800; color: #000; }
 
-        .publish-form {
-            background: var(--card-bg); padding: 30px; border-radius: 15px;
-            border: 1px solid var(--secondary-neon); max-width: 500px; margin: 0 auto;
-        }
-        .publish-form input, .publish-form textarea {
-            width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(0,0,0,0.5);
-            border: 1px solid var(--text-muted); color: white; border-radius: 8px; box-sizing: border-box; font-family: inherit;
-        }
-        .publish-form input:focus, .publish-form textarea:focus { border-color: var(--secondary-neon); outline: none; }
+        /* Friends Section */
+        .friends-container { background: var(--card-bg); padding: 20px; border-radius: 15px; max-width: 500px; margin: 0 auto; border: 1px solid #00bcd4; }
+        .friend-item { background: rgba(0,0,0,0.5); padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid #00bcd4; }
+        .del-friend { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+        /* Publish Form */
+        .publish-form { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--secondary-neon); max-width: 500px; margin: 0 auto; }
 
         /* Visa Modal */
-        #visa-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000;
-        }
-        .visa-content {
-            background: var(--card-bg); padding: 30px; border-radius: 15px; text-align: center;
-            border: 2px solid var(--vip-gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); max-width: 400px; width: 90%;
-        }
-        .visa-content input {
-            width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(0,0,0,0.5);
-            border: 1px solid var(--text-muted); color: white; border-radius: 8px; box-sizing: border-box; text-align: center;
-        }
-        .visa-content input:focus { border-color: var(--vip-gold); outline: none; }
+        #visa-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
+        .visa-content { background: var(--card-bg); padding: 30px; border-radius: 15px; text-align: center; border: 2px solid var(--vip-gold); max-width: 400px; width: 90%; }
         .loader { border: 4px solid #333; border-top: 4px solid var(--primary-neon); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -118,11 +119,14 @@
 
     <header>
         <h1>بوابة اللاعبين 🎮</h1>
-        <button id="logout-btn" onclick="logout()">تسجيل خروج</button>
+        <div class="header-btns">
+            <button class="header-btn" onclick="downloadStoreFile()">⬇️ تحميل المتجر</button>
+            <button id="logout-btn" class="header-btn" onclick="logout()">تسجيل خروج</button>
+        </div>
     </header>
 
     <div class="container">
-        <!-- قسم تسجيل الدخول -->
+        <!-- Login -->
         <div id="login-section">
             <h2 style="color: var(--primary-neon);">تسجيل الدخول</h2>
             <input type="text" id="username" placeholder="اسم المستخدم">
@@ -130,95 +134,49 @@
             <button class="action-btn" onclick="login()">دخول للمتجر</button>
         </div>
 
-        <!-- قسم المتجر -->
+        <!-- Store -->
         <div id="store-section">
             <div class="tabs">
                 <button class="tab-btn active" onclick="showSection('free')">ألعاب مجانية</button>
                 <button class="tab-btn vip-tab" onclick="showSection('vip')">ألعاب VIP 👑</button>
+                <button class="tab-btn friends-tab" onclick="showSection('friends')">الأصدقاء 👥</button>
                 <button class="tab-btn" onclick="showSection('publish')" style="border-color: var(--secondary-neon); color: var(--secondary-neon);">نشر لعبتك 🚀</button>
             </div>
 
-            <!-- الألعاب المجانية -->
-            <div id="free" class="section active">
-                <div class="games-grid">
-                    <div class="game-card">
-                        <div class="game-image">Brawlhalla</div>
-                        <div class="game-info">
-                            <h3 class="game-title">براولهالا</h3>
-                        </div>
-                        <button class="action-btn" onclick="downloadGame('brawlhalla')">حمل الآن مجاناً</button>
-                        <button class="edit-btn" onclick="editLink('brawlhalla')">⚙️ تعديل الرابط</button>
-                    </div>
+            <div id="free" class="section active"><div class="games-grid" id="free-games-grid"></div></div>
+            <div id="vip" class="section"><div class="games-grid" id="vip-games-grid"></div></div>
 
-                    <div class="game-card">
-                        <div class="game-image">Roblox</div>
-                        <div class="game-info">
-                            <h3 class="game-title">روبلوكس</h3>
-                        </div>
-                        <button class="action-btn" onclick="downloadGame('roblox')">حمل الآن مجاناً</button>
-                        <button class="edit-btn" onclick="editLink('roblox')">⚙️ تعديل الرابط</button>
+            <!-- Friends -->
+            <div id="friends" class="section">
+                <div class="friends-container">
+                    <h2 style="color: #00bcd4; text-align: center;">قائمة الأصدقاء 👥</h2>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="friendName" placeholder="اكتب اسم صديقك هنا..." style="margin: 0;">
+                        <button class="action-btn" style="width: auto; margin: 0; border-color: #00bcd4; color: #00bcd4;" onclick="addFriend()">إضافة</button>
                     </div>
-
-                    <div class="game-card">
-                        <div class="game-image">Supermarket Together</div>
-                        <div class="game-info">
-                            <h3 class="game-title">سوبر ماركت معاً</h3>
-                        </div>
-                        <button class="action-btn" onclick="downloadGame('supermarket')">حمل الآن مجاناً</button>
-                        <button class="edit-btn" onclick="editLink('supermarket')">⚙️ تعديل الرابط</button>
-                    </div>
+                    <div id="friends-list"></div>
                 </div>
             </div>
 
-            <!-- الألعاب المدفوعة VIP -->
-            <div id="vip" class="section">
-                <div class="games-grid">
-                    <div class="game-card">
-                        <div class="game-image">GTA V Premium</div>
-                        <div class="game-info">
-                            <h3 class="game-title">Grand Theft Auto V</h3>
-                            <span class="price-tag">السعر: 15 دولار</span>
-                        </div>
-                        <button class="action-btn buy-btn" onclick="openVisaModal('gta5', 'Grand Theft Auto V')">شراء بالفيزا 💳</button>
-                        <button class="edit-btn" onclick="editLink('gta5')">⚙️ تعديل الرابط</button>
-                    </div>
-
-                    <div class="game-card">
-                        <div class="game-image">Minecraft</div>
-                        <div class="game-info">
-                            <h3 class="game-title">ماين كرافت الأصلية</h3>
-                            <span class="price-tag">السعر: 10 دولار</span>
-                        </div>
-                        <button class="action-btn buy-btn" onclick="openVisaModal('minecraft', 'Minecraft')">شراء بالفيزا 💳</button>
-                        <button class="edit-btn" onclick="editLink('minecraft')">⚙️ تعديل الرابط</button>
-                    </div>
-
-                    <div class="game-card">
-                        <div class="game-image">Garry's Mod</div>
-                        <div class="game-info">
-                            <h3 class="game-title">Garry's Mod</h3>
-                            <span class="price-tag">السعر: 5 دولار</span>
-                        </div>
-                        <button class="action-btn buy-btn" onclick="openVisaModal('gmod', 'Garrys Mod')">شراء بالفيزا 💳</button>
-                        <button class="edit-btn" onclick="editLink('gmod')">⚙️ تعديل الرابط</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- قسم نشر الألعاب -->
+            <!-- Publish -->
             <div id="publish" class="section">
                 <div class="publish-form">
                     <h2 style="color: var(--secondary-neon); text-align: center;">ارفع لعبتك على المتجر! 🚀</h2>
                     <input type="text" placeholder="اسم اللعبة" id="gName">
                     <input type="text" placeholder="رابط اللعبة" id="gLink">
-                    <textarea placeholder="وصف اللعبة" rows="4" id="gDesc"></textarea>
+                    <select id="gType">
+                        <option value="free">لعبة مجانية</option>
+                        <option value="vip">لعبة مدفوعة (VIP)</option>
+                    </select>
+                    <input type="number" placeholder="السعر (اكتب 0 لو مجانية)" id="gPrice" value="0">
+                    <textarea placeholder="وصف اللعبة" rows="3" id="gDesc"></textarea>
                     <button class="action-btn" onclick="publishGame()" style="background: var(--secondary-neon); color: white; border: none;">نشر اللعبة الآن</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- شاشة الدفع بالفيزا -->
+    <!-- Visa Modal -->
     <div id="visa-modal">
         <div class="visa-content">
             <h2 style="color: var(--vip-gold); margin-top: 0;">بوابة الدفع الآمن 🔒</h2>
@@ -232,42 +190,36 @@
                 <button class="action-btn buy-btn" style="width: 100%;" onclick="processPayment()">تأكيد ودفع</button>
                 <button class="action-btn" style="width: 100%; margin-top: 10px; border-color: #ff4444; color: #ff4444;" onclick="closeVisaModal()">إلغاء</button>
             </div>
-            <div id="loading-screen" style="display: none;">
-                <div class="loader"></div>
-                <p style="color: var(--primary-neon);">جاري فحص الكارت...</p>
-            </div>
+            <div id="loading-screen" style="display: none;"><div class="loader"></div><p>جاري فحص الكارت...</p></div>
             <div id="success-screen" style="display: none;">
                 <h2 style="color: var(--primary-neon);">✅ تم الدفع بنجاح!</h2>
-                <button class="action-btn" style="background: var(--primary-neon); color: #000; width: 100%;" onclick="downloadGame(currentGameId)">⬇️ تحميل اللعبة فوراً</button>
+                <button class="action-btn" style="background: var(--primary-neon); color: #000; width: 100%;" onclick="downloadGame(currentGameLink)">⬇️ تحميل اللعبة فوراً</button>
             </div>
         </div>
     </div>
 
     <script>
-        // حفظ الروابط الدائمة في الذاكرة
-        let defaultLinks = {
-            'brawlhalla': 'https://www.brawlhalla.com/play',
-            'roblox': 'https://www.roblox.com',
-            'supermarket': 'https://store.steampowered.com',
-            'gta5': 'https://www.rockstargames.com/gta-v',
-            'minecraft': 'https://www.minecraft.net',
-            'gmod': 'https://gmod.facepunch.com'
-        };
+        // الألعاب الأساسية (لو الذاكرة فاضية)
+        let defaultGames = [
+            { id: 1, title: 'Brawlhalla', desc: 'لعبة قتال منصات مجانية.', type: 'free', price: 0, link: 'https://www.brawlhalla.com' },
+            { id: 2, title: 'Roblox', desc: 'اصنع عوالمك الخاصة والعب مع أصدقائك.', type: 'free', price: 0, link: 'https://www.roblox.com' },
+            { id: 3, title: 'GTA V Premium', desc: 'النسخة الكاملة مع الأونلاين.', type: 'vip', price: 15, link: 'https://www.rockstargames.com/gta-v' },
+            { id: 4, title: 'Minecraft', desc: 'حساب أصلي لدخول السيرفرات الخاصة.', type: 'vip', price: 10, link: 'https://www.minecraft.net' }
+        ];
 
-        let gameLinks = JSON.parse(localStorage.getItem('savedLinks')) || defaultLinks;
-        let currentGameId = '';
+        let gamesList = JSON.parse(localStorage.getItem('myStoreGames')) || defaultGames;
+        let friendsList = JSON.parse(localStorage.getItem('myFriends')) || [];
+        
         let isAdmin = localStorage.getItem('isAdmin') === 'true';
+        let currentGameLink = '';
 
-        // فحص حالة الدخول عند تحميل الصفحة
         window.onload = function() {
             if (localStorage.getItem('isLoggedIn') === 'true') {
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('store-section').style.display = 'block';
-                document.getElementById('logout-btn').style.display = 'block';
-                
-                if (isAdmin) {
-                    document.querySelectorAll('.edit-btn').forEach(btn => btn.style.display = 'block');
-                }
+                document.getElementById('logout-btn').style.display = 'inline-block';
+                renderGames();
+                renderFriends();
             }
         };
 
@@ -277,22 +229,18 @@
 
             if(user === '' || pass === '') { alert('اكتب الاسم وكلمة المرور!'); return; }
 
-            localStorage.setItem('isLoggedIn', 'true'); // حفظ الدخول دائم
-
+            localStorage.setItem('isLoggedIn', 'true');
             if(user === 'يوسف' && pass === '2031') {
-                localStorage.setItem('isAdmin', 'true');
-                isAdmin = true;
-                alert('أهلاً بك يا مدير الموقع! تم تفعيل لوحة تحكم الروابط وهتفضل مفتوحة دايماً.');
-                document.querySelectorAll('.edit-btn').forEach(btn => btn.style.display = 'block');
+                localStorage.setItem('isAdmin', 'true'); isAdmin = true;
+                alert('أهلاً يا مدير الموقع! أزرار المسح والتعديل اتفعلت ليك.');
             } else {
-                localStorage.setItem('isAdmin', 'false');
-                isAdmin = false;
-                alert('تم تسجيل الدخول كلاعب عادي.');
+                localStorage.setItem('isAdmin', 'false'); isAdmin = false;
             }
 
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('store-section').style.display = 'block';
-            document.getElementById('logout-btn').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'inline-block';
+            renderGames(); renderFriends();
         }
 
         function logout() {
@@ -301,72 +249,154 @@
             location.reload();
         }
 
+        // عرض الألعاب من الذاكرة
+        function renderGames() {
+            let freeGrid = document.getElementById('free-games-grid');
+            let vipGrid = document.getElementById('vip-games-grid');
+            freeGrid.innerHTML = ''; vipGrid.innerHTML = '';
+
+            gamesList.forEach(game => {
+                let card = document.createElement('div');
+                card.className = 'game-card';
+                
+                // زر المسح للأدمن
+                let deleteBtnHtml = isAdmin ? `<button class="delete-btn" onclick="deleteGame(${game.id})">🗑️</button>` : '';
+                let editBtnHtml = isAdmin ? `<button class="edit-btn" style="display:block" onclick="editLink(${game.id})">⚙️ تعديل الرابط</button>` : '';
+
+                let actionBtnHtml = game.type === 'free' 
+                    ? `<button class="action-btn" onclick="downloadGame('${game.link}')">حمل الآن مجاناً</button>`
+                    : `<button class="action-btn buy-btn" onclick="openVisaModal('${game.link}', '${game.title}')">شراء بـ ${game.price}$ 💳</button>`;
+
+                card.innerHTML = `
+                    ${deleteBtnHtml}
+                    <div class="game-image">${game.title}</div>
+                    <div class="game-info">
+                        <h3 class="game-title">${game.title}</h3>
+                        <p style="color: var(--text-muted);">${game.desc}</p>
+                    </div>
+                    ${actionBtnHtml}
+                    ${editBtnHtml}
+                `;
+
+                if (game.type === 'free') freeGrid.appendChild(card);
+                else vipGrid.appendChild(card);
+            });
+        }
+
+        // إضافة لعبة جديدة (الـ 100 لعبة)
+        function publishGame() {
+            let title = document.getElementById('gName').value.trim();
+            let link = document.getElementById('gLink').value.trim();
+            let type = document.getElementById('gType').value;
+            let price = document.getElementById('gPrice').value;
+            let desc = document.getElementById('gDesc').value.trim();
+
+            if(!title || !link) { alert("لازم تكتب اسم اللعبة والرابط!"); return; }
+
+            let newGame = {
+                id: Date.now(), title: title, desc: desc, type: type, price: price, link: link
+            };
+
+            gamesList.push(newGame);
+            localStorage.setItem('myStoreGames', JSON.stringify(gamesList));
+            
+            alert("تم إضافة اللعبة بنجاح للمتجر!");
+            document.getElementById('gName').value = ''; document.getElementById('gLink').value = ''; document.getElementById('gDesc').value = '';
+            renderGames();
+            showSection(type); // ينقلك للقسم اللي اللعبة نزلت فيه
+        }
+
+        // مسح اللعبة
+        function deleteGame(id) {
+            if(confirm("متأكد إنك عايز تمسح اللعبة دي من المتجر؟")) {
+                gamesList = gamesList.filter(g => g.id !== id);
+                localStorage.setItem('myStoreGames', JSON.stringify(gamesList));
+                renderGames();
+            }
+        }
+
+        function editLink(id) {
+            let gameIndex = gamesList.findIndex(g => g.id === id);
+            if(gameIndex > -1) {
+                let newLink = prompt("أدخل رابط التحميل الجديد:", gamesList[gameIndex].link);
+                if(newLink) {
+                    gamesList[gameIndex].link = newLink.trim();
+                    localStorage.setItem('myStoreGames', JSON.stringify(gamesList));
+                    alert("تم تحديث الرابط!");
+                    renderGames();
+                }
+            }
+        }
+
+        function downloadGame(link) { window.open(link, '_blank'); }
+
+        // نظام الأصدقاء
+        function renderFriends() {
+            let list = document.getElementById('friends-list');
+            list.innerHTML = '';
+            friendsList.forEach((friend, index) => {
+                list.innerHTML += `
+                    <div class="friend-item">
+                        <strong style="color: white;">👤 ${friend}</strong>
+                        <button class="del-friend" onclick="removeFriend(${index})">حذف</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addFriend() {
+            let name = document.getElementById('friendName').value.trim();
+            if(name) {
+                friendsList.push(name);
+                localStorage.setItem('myFriends', JSON.stringify(friendsList));
+                document.getElementById('friendName').value = '';
+                renderFriends();
+            }
+        }
+
+        function removeFriend(index) {
+            friendsList.splice(index, 1);
+            localStorage.setItem('myFriends', JSON.stringify(friendsList));
+            renderFriends();
+        }
+
+        // تحميل المتجر كملف HTML
+        function downloadStoreFile() {
+            let content = document.documentElement.outerHTML;
+            let blob = new Blob([content], {type: "text/html"});
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Youssef_Store.html";
+            link.click();
+        }
+
+        // التنقل بين الأقسام
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
-            if(sectionId === 'publish') {
-                event.target.style.background = 'var(--secondary-neon)'; event.target.style.color = '#fff';
-            }
+            let activeBtn = document.querySelector(`.tab-btn[onclick="showSection('${sectionId}')"]`);
+            if(activeBtn) activeBtn.classList.add('active');
         }
 
-        function editLink(gameId) {
-            if(!isAdmin) return;
-            let currentLink = gameLinks[gameId];
-            let newLink = prompt("أدخل رابط التحميل الحقيقي للعبة:", currentLink);
-            
-            if(newLink !== null && newLink.trim() !== "") {
-                gameLinks[gameId] = newLink.trim();
-                localStorage.setItem('savedLinks', JSON.stringify(gameLinks)); // حفظ الرابط الجديد للأبد
-                alert("تم تحديث الرابط بنجاح وحفظه للأبد!");
-            }
-        }
-
-        function downloadGame(gameId) {
-            let link = gameLinks[gameId];
-            if(link) { window.open(link, '_blank'); } else { alert('لم يتم وضع رابط لهذه اللعبة بعد.'); }
-        }
-
-        function publishGame() {
-            let name = document.getElementById('gName').value;
-            if(name) {
-                alert("تم إرسال لعبة (" + name + ") للإدارة، وهتظهر في الموقع قريب.");
-                document.getElementById('gName').value = '';
-                document.getElementById('gLink').value = '';
-            }
-        }
-
-        // دوال الفيزا
-        function openVisaModal(gameId, gameTitle) {
-            currentGameId = gameId;
-            document.getElementById('game-name-display').innerText = "شراء: " + gameTitle;
-            document.getElementById('cardNumber').value = '';
-            document.getElementById('expiryDate').value = '';
-            document.getElementById('cvv').value = '';
+        // الدفع بالفيزا
+        function openVisaModal(link, title) {
+            currentGameLink = link;
+            document.getElementById('game-name-display').innerText = "شراء: " + title;
             document.getElementById('payment-form').style.display = 'block';
-            document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('success-screen').style.display = 'none';
             document.getElementById('visa-modal').style.display = 'flex';
         }
-
         function closeVisaModal() { document.getElementById('visa-modal').style.display = 'none'; }
-
+        
         function processPayment() {
             let card = document.getElementById('cardNumber').value.trim();
-            let cvv = document.getElementById('cvv').value.trim();
-
             if (card === "يو 1 2" || card === "يويو") {
                 document.getElementById('payment-form').style.display = 'none';
                 document.getElementById('success-screen').style.display = 'block';
                 return;
             }
-
-            if (!/^\d{16}$/.test(card) || !/^\d{3}$/.test(cvv)) {
-                alert("❌ خطأ: تأكد من كتابة 16 رقم للكارت و 3 أرقام للرقم السري (CVV).");
-                return;
-            }
-
+            if (!/^\d{16}$/.test(card)) { alert("❌ خطأ: رقم الكارت غير صحيح!"); return; }
             document.getElementById('payment-form').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
             setTimeout(() => { 
