@@ -8,9 +8,9 @@
     <title>Youssef Store - المتجر المتكامل</title>
     <style>
         :root {
-            --bg-color: #1b2838; /* لون خلفية Steam */
-            --card-bg: #171a21; /* لون كروت Steam */
-            --primary-neon: #66c0f4; /* لون أزرق Steam المميز */
+            --bg-color: #1b2838;
+            --card-bg: #171a21;
+            --primary-neon: #66c0f4;
             --secondary-neon: #4b6a94; 
             --vip-gold: #ffd700; 
             --text-main: #ffffff; 
@@ -41,7 +41,6 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* Login Section */
         #login-section {
             background: var(--card-bg); padding: 40px; border-radius: 8px;
             max-width: 400px; margin: 50px auto; border: 1px solid var(--secondary-neon);
@@ -53,7 +52,6 @@
         }
         input:focus, textarea:focus { border-color: var(--primary-neon); outline: none; }
 
-        /* Store Section */
         #store-section { display: none; }
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
         .tab-btn {
@@ -85,7 +83,6 @@
         .game-title { color: var(--text-main); margin: 0 0 5px 0; font-size: 1.3rem; }
         .price-tag { color: var(--primary-neon); font-weight: bold; font-size: 1.1rem; display: block; margin-bottom: 10px; }
 
-        /* زر المسح فوق على اليمين */
         .delete-btn {
             display: none; position: absolute; top: 10px; right: 10px;
             background: #ff4444; color: white; border: none; border-radius: 4px;
@@ -108,15 +105,12 @@
         }
         .edit-btn:hover { background: #ff9800; color: #000; }
 
-        /* Friends Section */
         .friends-container { background: var(--card-bg); padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto; border: 1px solid var(--secondary-neon); }
         .friend-item { background: rgba(0,0,0,0.5); padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
         .del-friend { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 
-        /* Publish Form */
         .publish-form { background: var(--card-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--secondary-neon); max-width: 500px; margin: 0 auto; }
 
-        /* Visa Modal */
         #visa-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
         .visa-content { background: var(--card-bg); padding: 30px; border-radius: 8px; text-align: center; border: 1px solid var(--primary-neon); max-width: 400px; width: 90%; }
         .loader { border: 4px solid #333; border-top: 4px solid var(--primary-neon); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -134,7 +128,6 @@
     </header>
 
     <div class="container">
-        <!-- Login -->
         <div id="login-section">
             <h2 style="color: var(--primary-neon);">تسجيل الدخول</h2>
             <input type="text" id="username" placeholder="اسم المستخدم">
@@ -142,7 +135,6 @@
             <button class="action-btn" onclick="login()">دخول للمتجر</button>
         </div>
 
-        <!-- Store -->
         <div id="store-section">
             <div class="tabs">
                 <button class="tab-btn active" onclick="showSection('free')">ألعاب مجانية</button>
@@ -154,7 +146,6 @@
             <div id="free" class="section active"><div class="games-grid" id="free-games-grid"></div></div>
             <div id="vip" class="section"><div class="games-grid" id="vip-games-grid"></div></div>
 
-            <!-- Friends -->
             <div id="friends" class="section">
                 <div class="friends-container">
                     <h2 style="color: #00bcd4; text-align: center;">قائمة الأصدقاء 👥</h2>
@@ -166,7 +157,6 @@
                 </div>
             </div>
 
-            <!-- Publish -->
             <div id="publish" class="section">
                 <div class="publish-form">
                     <h2 style="color: var(--secondary-neon); text-align: center;">ارفع لعبتك على المتجر! 🚀</h2>
@@ -184,7 +174,6 @@
         </div>
     </div>
 
-    <!-- Visa Modal -->
     <div id="visa-modal">
         <div class="visa-content">
             <h2 style="color: var(--vip-gold); margin-top: 0;">بوابة الدفع الآمن 🔒</h2>
@@ -235,7 +224,9 @@
             if(user === '' || pass === '') { alert('اكتب الاسم وكلمة المرور!'); return; }
 
             localStorage.setItem('isLoggedIn', 'true');
-            if(user === 'يوسف' && pass === '2031') {
+            
+            // تم التعديل هنا لاسم المستخدم والباسورد الجديدين
+            if(user === 'YoussefGG.123' && pass === '123') {
                 localStorage.setItem('isAdmin', 'true'); isAdmin = true;
                 alert('أهلاً يا مدير الموقع! أزرار المسح والتعديل اتفعلت ليك.');
             } else {
@@ -371,11 +362,18 @@
             document.getElementById(sectionId).classList.add('active');
             let activeBtn = document.querySelector(`.tab-btn[onclick="showSection('${sectionId}')"]`);
             if(activeBtn) activeBtn.classList.add('active');
+            
+            if(sectionId === 'publish') {
+                event.target.style.background = 'var(--secondary-neon)'; event.target.style.color = '#fff';
+            }
         }
 
         function openVisaModal(link, title) {
             currentGameLink = link;
             document.getElementById('game-name-display').innerText = "شراء: " + title;
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('cvv').value = '';
             document.getElementById('payment-form').style.display = 'block';
             document.getElementById('success-screen').style.display = 'none';
             document.getElementById('visa-modal').style.display = 'flex';
