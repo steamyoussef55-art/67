@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- أكواد لجعل الموقع يعمل كتطبيق على الهاتف -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>بوابة اللاعبين - المتجر المتكامل</title>
     <style>
         :root {
@@ -18,10 +22,16 @@
         }
 
         header {
-            background-color: rgba(26, 26, 36, 0.9); padding: 20px; text-align: center;
+            background-color: rgba(26, 26, 36, 0.9); padding: 15px 20px;
             border-bottom: 2px solid var(--primary-neon); box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            display: flex; justify-content: space-between; align-items: center;
         }
-        h1 { margin: 0; font-size: 2rem; color: var(--primary-neon); }
+        h1 { margin: 0; font-size: 1.8rem; color: var(--primary-neon); }
+        
+        #logout-btn {
+            display: none; background: #ff4444; color: white; border: none;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;
+        }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
@@ -39,10 +49,10 @@
 
         /* Store Section */
         #store-section { display: none; }
-        .tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
         .tab-btn {
             background: transparent; color: var(--text-main); border: 1px solid var(--primary-neon);
-            padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: 0.3s;
+            padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: 0.3s;
         }
         .tab-btn.active, .tab-btn:hover { background: var(--primary-neon); color: #000; box-shadow: 0 0 15px var(--primary-neon); }
         .tab-btn.vip-tab { border-color: var(--vip-gold); color: var(--vip-gold); font-weight: bold; }
@@ -70,14 +80,12 @@
         .buy-btn { color: var(--vip-gold); border-color: var(--vip-gold); }
         .buy-btn:hover { background: var(--vip-gold); color: #000; }
         
-        /* زر الأدمن لتعديل الروابط */
         .edit-btn {
             display: none; background: transparent; color: #ff9800; border: 1px dashed #ff9800;
             padding: 8px; border-radius: 8px; cursor: pointer; width: 90%; margin: 5px auto; font-weight: bold;
         }
         .edit-btn:hover { background: #ff9800; color: #000; }
 
-        /* Publish Form */
         .publish-form {
             background: var(--card-bg); padding: 30px; border-radius: 15px;
             border: 1px solid var(--secondary-neon); max-width: 500px; margin: 0 auto;
@@ -110,10 +118,10 @@
 
     <header>
         <h1>بوابة اللاعبين 🎮</h1>
+        <button id="logout-btn" onclick="logout()">تسجيل خروج</button>
     </header>
 
     <div class="container">
-        
         <!-- قسم تسجيل الدخول -->
         <div id="login-section">
             <h2 style="color: var(--primary-neon);">تسجيل الدخول</h2>
@@ -126,7 +134,7 @@
         <div id="store-section">
             <div class="tabs">
                 <button class="tab-btn active" onclick="showSection('free')">ألعاب مجانية</button>
-                <button class="tab-btn vip-tab" onclick="showSection('vip')">ألعاب مدفوعة VIP 👑</button>
+                <button class="tab-btn vip-tab" onclick="showSection('vip')">ألعاب VIP 👑</button>
                 <button class="tab-btn" onclick="showSection('publish')" style="border-color: var(--secondary-neon); color: var(--secondary-neon);">نشر لعبتك 🚀</button>
             </div>
 
@@ -137,30 +145,27 @@
                         <div class="game-image">Brawlhalla</div>
                         <div class="game-info">
                             <h3 class="game-title">براولهالا</h3>
-                            <p style="color: var(--text-muted);">لعبة قتال منصات مجانية.</p>
                         </div>
                         <button class="action-btn" onclick="downloadGame('brawlhalla')">حمل الآن مجاناً</button>
-                        <button class="edit-btn" onclick="editLink('brawlhalla')">⚙️ تعديل رابط التحميل</button>
+                        <button class="edit-btn" onclick="editLink('brawlhalla')">⚙️ تعديل الرابط</button>
                     </div>
 
                     <div class="game-card">
                         <div class="game-image">Roblox</div>
                         <div class="game-info">
                             <h3 class="game-title">روبلوكس</h3>
-                            <p style="color: var(--text-muted);">اصنع عوالمك الخاصة والعب مع أصدقائك.</p>
                         </div>
                         <button class="action-btn" onclick="downloadGame('roblox')">حمل الآن مجاناً</button>
-                        <button class="edit-btn" onclick="editLink('roblox')">⚙️ تعديل رابط التحميل</button>
+                        <button class="edit-btn" onclick="editLink('roblox')">⚙️ تعديل الرابط</button>
                     </div>
 
                     <div class="game-card">
                         <div class="game-image">Supermarket Together</div>
                         <div class="game-info">
                             <h3 class="game-title">سوبر ماركت معاً</h3>
-                            <p style="color: var(--text-muted);">إدارة سوبر ماركت مع أصدقائك.</p>
                         </div>
                         <button class="action-btn" onclick="downloadGame('supermarket')">حمل الآن مجاناً</button>
-                        <button class="edit-btn" onclick="editLink('supermarket')">⚙️ تعديل رابط التحميل</button>
+                        <button class="edit-btn" onclick="editLink('supermarket')">⚙️ تعديل الرابط</button>
                     </div>
                 </div>
             </div>
@@ -172,33 +177,30 @@
                         <div class="game-image">GTA V Premium</div>
                         <div class="game-info">
                             <h3 class="game-title">Grand Theft Auto V</h3>
-                            <p style="color: var(--text-muted);">النسخة الكاملة مع الأونلاين.</p>
                             <span class="price-tag">السعر: 15 دولار</span>
                         </div>
                         <button class="action-btn buy-btn" onclick="openVisaModal('gta5', 'Grand Theft Auto V')">شراء بالفيزا 💳</button>
-                        <button class="edit-btn" onclick="editLink('gta5')">⚙️ تعديل رابط التحميل</button>
+                        <button class="edit-btn" onclick="editLink('gta5')">⚙️ تعديل الرابط</button>
                     </div>
 
                     <div class="game-card">
                         <div class="game-image">Minecraft</div>
                         <div class="game-info">
                             <h3 class="game-title">ماين كرافت الأصلية</h3>
-                            <p style="color: var(--text-muted);">حساب أصلي لدخول جميع السيرفرات الخاصة.</p>
                             <span class="price-tag">السعر: 10 دولار</span>
                         </div>
                         <button class="action-btn buy-btn" onclick="openVisaModal('minecraft', 'Minecraft')">شراء بالفيزا 💳</button>
-                        <button class="edit-btn" onclick="editLink('minecraft')">⚙️ تعديل رابط التحميل</button>
+                        <button class="edit-btn" onclick="editLink('minecraft')">⚙️ تعديل الرابط</button>
                     </div>
 
                     <div class="game-card">
                         <div class="game-image">Garry's Mod</div>
                         <div class="game-info">
                             <h3 class="game-title">Garry's Mod</h3>
-                            <p style="color: var(--text-muted);">لعبة إبداعية لا حدود لها، ابدأ البناء الآن.</p>
                             <span class="price-tag">السعر: 5 دولار</span>
                         </div>
                         <button class="action-btn buy-btn" onclick="openVisaModal('gmod', 'Garrys Mod')">شراء بالفيزا 💳</button>
-                        <button class="edit-btn" onclick="editLink('gmod')">⚙️ تعديل رابط التحميل</button>
+                        <button class="edit-btn" onclick="editLink('gmod')">⚙️ تعديل الرابط</button>
                     </div>
                 </div>
             </div>
@@ -207,12 +209,9 @@
             <div id="publish" class="section">
                 <div class="publish-form">
                     <h2 style="color: var(--secondary-neon); text-align: center;">ارفع لعبتك على المتجر! 🚀</h2>
-                    <p style="color: var(--text-muted); text-align: center; margin-bottom: 20px;">
-                        لو برمجت لعبة أو عايز تشارك لعبة مع الناس، اكتب بياناتها هنا وهتنزل على الموقع.
-                    </p>
                     <input type="text" placeholder="اسم اللعبة" id="gName">
-                    <input type="text" placeholder="رابط اللعبة (لينك التحميل أو اللعب)" id="gLink">
-                    <textarea placeholder="وصف اللعبة (اكتب قصة اللعبة أو طريقة اللعب)" rows="4" id="gDesc"></textarea>
+                    <input type="text" placeholder="رابط اللعبة" id="gLink">
+                    <textarea placeholder="وصف اللعبة" rows="4" id="gDesc"></textarea>
                     <button class="action-btn" onclick="publishGame()" style="background: var(--secondary-neon); color: white; border: none;">نشر اللعبة الآن</button>
                 </div>
             </div>
@@ -224,22 +223,19 @@
         <div class="visa-content">
             <h2 style="color: var(--vip-gold); margin-top: 0;">بوابة الدفع الآمن 🔒</h2>
             <p id="game-name-display" style="color: var(--text-muted);"></p>
-            
             <div id="payment-form">
                 <input type="text" id="cardNumber" placeholder="رقم الكارت (16 رقم)">
                 <div style="display: flex; gap: 10px;">
                     <input type="text" id="expiryDate" placeholder="MM/YY">
-                    <input type="text" id="cvv" placeholder="CVV (3 أرقام)">
+                    <input type="text" id="cvv" placeholder="CVV">
                 </div>
                 <button class="action-btn buy-btn" style="width: 100%;" onclick="processPayment()">تأكيد ودفع</button>
                 <button class="action-btn" style="width: 100%; margin-top: 10px; border-color: #ff4444; color: #ff4444;" onclick="closeVisaModal()">إلغاء</button>
             </div>
-
             <div id="loading-screen" style="display: none;">
                 <div class="loader"></div>
                 <p style="color: var(--primary-neon);">جاري فحص الكارت...</p>
             </div>
-
             <div id="success-screen" style="display: none;">
                 <h2 style="color: var(--primary-neon);">✅ تم الدفع بنجاح!</h2>
                 <button class="action-btn" style="background: var(--primary-neon); color: #000; width: 100%;" onclick="downloadGame(currentGameId)">⬇️ تحميل اللعبة فوراً</button>
@@ -248,7 +244,8 @@
     </div>
 
     <script>
-        let gameLinks = {
+        // حفظ الروابط الدائمة في الذاكرة
+        let defaultLinks = {
             'brawlhalla': 'https://www.brawlhalla.com/play',
             'roblox': 'https://www.roblox.com',
             'supermarket': 'https://store.steampowered.com',
@@ -257,28 +254,51 @@
             'gmod': 'https://gmod.facepunch.com'
         };
 
+        let gameLinks = JSON.parse(localStorage.getItem('savedLinks')) || defaultLinks;
         let currentGameId = '';
-        let isAdmin = false;
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        // فحص حالة الدخول عند تحميل الصفحة
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('store-section').style.display = 'block';
+                document.getElementById('logout-btn').style.display = 'block';
+                
+                if (isAdmin) {
+                    document.querySelectorAll('.edit-btn').forEach(btn => btn.style.display = 'block');
+                }
+            }
+        };
 
         function login() {
             let user = document.getElementById('username').value.trim();
             let pass = document.getElementById('password').value.trim();
 
-            if(user === '' || pass === '') {
-                alert('اكتب الاسم وكلمة المرور!');
-                return;
-            }
+            if(user === '' || pass === '') { alert('اكتب الاسم وكلمة المرور!'); return; }
+
+            localStorage.setItem('isLoggedIn', 'true'); // حفظ الدخول دائم
 
             if(user === 'يوسف' && pass === '2031') {
+                localStorage.setItem('isAdmin', 'true');
                 isAdmin = true;
-                alert('أهلاً بك يا مدير الموقع! تم تفعيل لوحة تحكم الروابط.');
+                alert('أهلاً بك يا مدير الموقع! تم تفعيل لوحة تحكم الروابط وهتفضل مفتوحة دايماً.');
                 document.querySelectorAll('.edit-btn').forEach(btn => btn.style.display = 'block');
             } else {
+                localStorage.setItem('isAdmin', 'false');
+                isAdmin = false;
                 alert('تم تسجيل الدخول كلاعب عادي.');
             }
 
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('store-section').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'block';
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('isAdmin');
+            location.reload();
         }
 
         function showSection(sectionId) {
@@ -286,14 +306,8 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
-            
-            // إضافة تأثير للزر النشط
             if(sectionId === 'publish') {
-                event.target.style.background = 'var(--secondary-neon)';
-                event.target.style.color = '#fff';
-            } else {
-                document.querySelector('.tab-btn[onclick="showSection(\\\'publish\\\')"]').style.background = 'transparent';
-                document.querySelector('.tab-btn[onclick="showSection(\\\'publish\\\')"]').style.color = 'var(--secondary-neon)';
+                event.target.style.background = 'var(--secondary-neon)'; event.target.style.color = '#fff';
             }
         }
 
@@ -304,32 +318,26 @@
             
             if(newLink !== null && newLink.trim() !== "") {
                 gameLinks[gameId] = newLink.trim();
-                alert("تم تحديث الرابط بنجاح! أي شخص سيحمل اللعبة الآن سيذهب للرابط الجديد.");
+                localStorage.setItem('savedLinks', JSON.stringify(gameLinks)); // حفظ الرابط الجديد للأبد
+                alert("تم تحديث الرابط بنجاح وحفظه للأبد!");
             }
         }
 
         function downloadGame(gameId) {
             let link = gameLinks[gameId];
-            if(link) {
-                window.open(link, '_blank');
-            } else {
-                alert('لم يتم وضع رابط لهذه اللعبة بعد.');
-            }
+            if(link) { window.open(link, '_blank'); } else { alert('لم يتم وضع رابط لهذه اللعبة بعد.'); }
         }
 
         function publishGame() {
             let name = document.getElementById('gName').value;
-            let link = document.getElementById('gLink').value;
-            if(name && link) {
-                alert("مبروك! تم إرسال لعبة (" + name + ") للإدارة، وهتظهر في الموقع قريب.");
+            if(name) {
+                alert("تم إرسال لعبة (" + name + ") للإدارة، وهتظهر في الموقع قريب.");
                 document.getElementById('gName').value = '';
                 document.getElementById('gLink').value = '';
-                document.getElementById('gDesc').value = '';
-            } else {
-                alert("يا مطور، لازم تكتب اسم اللعبة والرابط بتاعها!");
             }
         }
 
+        // دوال الفيزا
         function openVisaModal(gameId, gameTitle) {
             currentGameId = gameId;
             document.getElementById('game-name-display').innerText = "شراء: " + gameTitle;
@@ -342,41 +350,29 @@
             document.getElementById('visa-modal').style.display = 'flex';
         }
 
-        function closeVisaModal() {
-            document.getElementById('visa-modal').style.display = 'none';
-        }
+        function closeVisaModal() { document.getElementById('visa-modal').style.display = 'none'; }
 
         function processPayment() {
             let card = document.getElementById('cardNumber').value.trim();
             let cvv = document.getElementById('cvv').value.trim();
 
             if (card === "يو 1 2" || card === "يويو") {
-                showSuccessScreen();
+                document.getElementById('payment-form').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'block';
                 return;
             }
 
-            let is16Digits = /^\d{16}$/.test(card);
-            let is3Digits = /^\d{3}$/.test(cvv);
-
-            if (!is16Digits) {
-                alert("❌ خطأ: رقم الكارت غير صحيح! يجب كتابة 16 رقم بالضبط ولا يقبل حروف أو مسافات.");
-                return;
-            }
-            if (!is3Digits) {
-                alert("❌ خطأ: الرقم السري (CVV) غير صحيح! يجب كتابة 3 أرقام فقط.");
+            if (!/^\d{16}$/.test(card) || !/^\d{3}$/.test(cvv)) {
+                alert("❌ خطأ: تأكد من كتابة 16 رقم للكارت و 3 أرقام للرقم السري (CVV).");
                 return;
             }
 
             document.getElementById('payment-form').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
-
-            setTimeout(() => { showSuccessScreen(); }, 2000);
-        }
-
-        function showSuccessScreen() {
-            document.getElementById('payment-form').style.display = 'none';
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('success-screen').style.display = 'block';
+            setTimeout(() => { 
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'block';
+            }, 2000);
         }
     </script>
 </body>
