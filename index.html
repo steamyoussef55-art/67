@@ -225,7 +225,6 @@
 
             localStorage.setItem('isLoggedIn', 'true');
             
-            // تم التعديل هنا لاسم المستخدم والباسورد الجديدين
             if(user === 'YoussefGG.123' && pass === '123') {
                 localStorage.setItem('isAdmin', 'true'); isAdmin = true;
                 alert('أهلاً يا مدير الموقع! أزرار المسح والتعديل اتفعلت ليك.');
@@ -391,7 +390,7 @@
             }
 
             if (!/^\d{16}$/.test(card) \vert{}\vert{} !/^\d{3}$/.test(cvv)) {
-                alert("كد من كتابة 16 رقم للكارت و 3 أرقام للرقم السري.");
+                alert("❌ خطأ: تأكد من كتابة 16 رقم للكارت و 3 أرقام للرقم السري.");
                 return;
             }
 
