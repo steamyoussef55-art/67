@@ -38,7 +38,6 @@
         #logout-btn { display: none; border-color: #ff4444; color: #ff4444; }
         #logout-btn:hover { background: #ff4444; color: white; }
 
-        /* تنسيق بروفايل المستخدم في الهيدر */
         #user-profile-header {
             display: none; align-items: center; gap: 8px;
             background: rgba(102, 192, 244, 0.1); padding: 5px 12px;
@@ -55,7 +54,6 @@
             text-align: center;
         }
         
-        /* زرار جوجل */
         .google-btn {
             background: #ffffff; color: #333; border: none;
             padding: 12px; border-radius: 4px; cursor: pointer; width: 100%;
@@ -113,8 +111,9 @@
         .game-title { color: var(--text-main); margin: 0 0 5px 0; font-size: 1.3rem; }
         .game-author { color: var(--vip-gold); font-size: 0.85rem; margin-bottom: 8px; display: block; }
 
+        /* أزرار الحذف والتعديل تظهر للجميع الآن */
         .delete-btn {
-            display: none; position: absolute; top: 10px; right: 10px;
+            position: absolute; top: 10px; right: 10px;
             background: #ff4444; color: white; border: none; border-radius: 4px;
             width: 30px; height: 30px; cursor: pointer; font-size: 1rem; line-height: 30px; text-align: center;
         }
@@ -129,7 +128,7 @@
         .buy-btn:hover { background: var(--vip-gold); color: #000; }
         
         .edit-btn {
-            display: none; background: transparent; color: #ff9800; border: 1px dashed #ff9800;
+            background: transparent; color: #ff9800; border: 1px dashed #ff9800;
             padding: 8px; border-radius: 4px; cursor: pointer; width: 90%; margin: 5px auto; font-weight: bold;
             transition: 0.3s;
         }
@@ -141,7 +140,7 @@
 
         .publish-form { background: var(--card-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--secondary-neon); max-width: 500px; margin: 0 auto; }
 
-        /* نافذة الدفع (فيزا + باي بال) */
+        /* نافذة الدفع */
         #payment-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: var(--card-bg); padding: 25px; border-radius: 8px; text-align: center; border: 1px solid var(--primary-neon); max-width: 420px; width: 90%; }
         
@@ -162,12 +161,11 @@
     <header>
         <h1>Youssef Store 🎮</h1>
         <div class="header-btns">
-            <!-- مكان ظهور صورة واسم المستخدم بعد الدخول -->
             <div id="user-profile-header">
                 <img id="user-pic" src="" alt="صورة الحساب">
                 <span id="user-name-display"></span>
             </div>
-            <button type="button" class="header-btn" onclick="resetDefaultGames()">🔄 إظهار الألعاب الجديدة</button>
+            <button type="button" class="header-btn" onclick="resetDefaultGames()">🔄 إظهار الألعاب الافتراضية</button>
             <button type="button" class="header-btn" onclick="downloadStoreFile()">⬇️ تحميل المتجر</button>
             <button type="button" id="logout-btn" class="header-btn" onclick="logout()">تسجيل خروج</button>
         </div>
@@ -177,16 +175,14 @@
         <div id="login-section">
             <h2 style="color: var(--primary-neon); margin-top: 0;">مرحباً بك في المتجر</h2>
             
-            <!-- زرار تسجيل الدخول بجوجل (Firebase) -->
             <button type="button" id="google-login-btn" class="google-btn">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20" alt="Google">
                 تسجيل الدخول بحساب Google
             </button>
 
-            <div class="divider">أو الدخول باسم مستخدم (وللمدير)</div>
+            <div class="divider">أو الدخول السريع كزائر</div>
 
-            <input type="text" id="username" placeholder="اسم المستخدم">
-            <input type="password" id="password" placeholder="كلمة المرور">
+            <input type="text" id="username" placeholder="اكتب اسمك للدخول...">
             <button type="button" class="action-btn" style="width: 100%;" onclick="login()">دخول للمتجر</button>
         </div>
 
@@ -216,7 +212,7 @@
                 <div class="publish-form">
                     <h2 style="color: var(--primary-neon); text-align: center;">ارفع لعبتك على المتجر! 🚀</h2>
                     <input type="text" placeholder="اسم اللعبة (مثال: FIFA 24)" id="gName">
-                    <input type="text" placeholder="من مين؟ (اسمك أو اسم ناشر اللعبة)" id="gAuthor">
+                    <input type="text" placeholder="من مين؟ (اسمك أو اسم الناشر)" id="gAuthor">
                     <input type="text" placeholder="رابط اللعبة المباشر (https://...)" id="gLink">
                     <select id="gType">
                         <option value="free">لعبة مجانية</option>
@@ -230,7 +226,7 @@
         </div>
     </div>
 
-    <!-- نافذة الدفع (فيزا + باي بال) -->
+    <!-- نافذة الدفع -->
     <div id="payment-modal">
         <div class="modal-content">
             <h2 style="color: var(--vip-gold); margin-top: 0;">بوابة الدفع الإلكتروني 🔒</h2>
@@ -242,14 +238,12 @@
                     <button type="button" id="tab-visa" class="method-btn" onclick="switchPayMethod('visa')">💳 بطاقة فيزا</button>
                 </div>
 
-                <!-- قسم باي بال -->
                 <div id="paypal-inputs">
                     <input type="email" id="paypalEmail" placeholder="البريد الإلكتروني لحساب PayPal (أو الكود السري)">
                     <input type="password" id="paypalPass" placeholder="كلمة مرور PayPal">
                     <button type="button" class="action-btn" style="width: 100%; background: var(--paypal-blue); color: white; border: none;" onclick="processPayment('paypal')">الدفع عبر PayPal</button>
                 </div>
 
-                <!-- قسم الفيزا -->
                 <div id="visa-inputs" style="display: none;">
                     <input type="text" id="cardNumber" placeholder="رقم الكارت (16 رقم أو الكود السري)">
                     <div style="display: flex; gap: 10px;">
@@ -287,11 +281,9 @@
 
         let gamesList = JSON.parse(localStorage.getItem('myStoreGames')) || defaultGames;
         let friendsList = JSON.parse(localStorage.getItem('myFriends')) || [];
-        let isAdmin = localStorage.getItem('isAdmin') === 'true';
-        let currentUser = localStorage.getItem('currentUser') || 'عضو بالمتجر';
+        let currentUser = localStorage.getItem('currentUser') || 'زائر';
         let currentGameLink = '';
 
-        // دالة لفتح المتجر وعرض بيانات المستخدم
         function enterStore(name, picUrl) {
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('store-section').style.display = 'block';
@@ -311,7 +303,6 @@
                 userPic.style.display = 'none';
             }
 
-            // وضع اسم المستخدم تلقائياً في خانة نشر الألعاب
             const authorInput = document.getElementById('gAuthor');
             if (authorInput && !authorInput.value) {
                 authorInput.value = name;
@@ -329,35 +320,18 @@
         });
 
         function login() {
-            let user = document.getElementById('username').value.trim();
-            let pass = document.getElementById('password').value.trim();
-            
-            if (user === '' || pass === '') { 
-                alert('من فضلك اكتب الاسم وكلمة المرور!'); 
-                return; 
-            }
-
+            let user = document.getElementById('username').value.trim() || 'زائر';
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('currentUser', user);
             localStorage.removeItem('currentUserPic');
             currentUser = user;
             
-            if (user === 'Youssef' && pass === '123') {
-                localStorage.setItem('isAdmin', 'true'); 
-                isAdmin = true;
-                alert('أهلاً يا مدير الموقع! تم تسجيل الدخول بنجاح.');
-            } else {
-                localStorage.setItem('isAdmin', 'false'); 
-                isAdmin = false;
-                alert('أهلاً بك يا ' + user + '! يمكنك الآن تصفح المتجر أو نشر ألعابك.');
-            }
-
+            alert('أهلاً بك يا ' + user + '! يمكنك تصفح المتجر، حذف أو تعديل أي لعبة بكل حرية.');
             enterStore(user, '');
         }
 
         function logout() {
             localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('isAdmin');
             localStorage.removeItem('currentUser');
             localStorage.removeItem('currentUserPic');
             if (window.firebaseSignOut) {
@@ -371,7 +345,7 @@
             localStorage.setItem('myStoreGames', JSON.stringify(defaultGames));
             gamesList = defaultGames;
             renderGames();
-            alert('تم تحديث المتجر وإظهار جميع الألعاب الافتراضية والجديدة!');
+            alert('تم استرجاع جميع الألعاب الافتراضية!');
         }
 
         function formatUrl(url) {
@@ -391,8 +365,9 @@
                 let card = document.createElement('div');
                 card.className = 'game-card';
                 
-                let deleteBtnHtml = isAdmin ? `<button type="button" class="delete-btn" style="display:block" onclick="deleteGame(${game.id})">🗑️</button>` : '';
-                let editBtnHtml = isAdmin ? `<button type="button" class="edit-btn" style="display:block" onclick="editLink(${game.id})">⚙️ تعديل الرابط</button>` : '';
+                // زرار الحذف والتعديل يظهران لأي مستخدم يفتح الموقع
+                let deleteBtnHtml = `<button type="button" class="delete-btn" onclick="deleteGame(${game.id})" title="حذف اللعبة">🗑️</button>`;
+                let editBtnHtml = `<button type="button" class="edit-btn" onclick="editLink(${game.id})">⚙️ تعديل الرابط أو الاسم</button>`;
 
                 let safeLink = game.link.replace(/'/g, "\\'");
                 let safeTitle = game.title.replace(/'/g, "\\'");
@@ -408,7 +383,7 @@
                         <div class="game-image">${game.title}</div>
                         <div class="game-info">
                             <h3 class="game-title">${game.title}</h3>
-                            <span class="game-author">👤 منشورة من: ${publisher}</span>
+                            <span class="game-author">👤 مضافة بواسطة: ${publisher}</span>
                             <p style="color: var(--text-muted); margin: 0;">${game.desc}</p>
                         </div>
                     </div>
@@ -429,7 +404,7 @@
             let link = document.getElementById('gLink').value.trim();
             let type = document.getElementById('gType').value;
             let price = document.getElementById('gPrice').value || 0;
-            let desc = document.getElementById('gDesc').value.trim() || 'لعبة مميزة مضافة بواسطة أحد أعضاء المتجر.';
+            let desc = document.getElementById('gDesc').value.trim() || 'لعبة مميزة مضافة للمتجر.';
 
             if (!title || !link) { 
                 alert("لازم تكتب اسم اللعبة وتحط الرابط بتاعها!"); 
@@ -449,7 +424,7 @@
             gamesList.push(newGame);
             localStorage.setItem('myStoreGames', JSON.stringify(gamesList));
             
-            alert("تم نشر اللعبة بنجاح باسم (" + author + ")!");
+            alert("تم نشر اللعبة بنجاح!");
             document.getElementById('gName').value = ''; 
             document.getElementById('gLink').value = ''; 
             document.getElementById('gDesc').value = '';
@@ -470,11 +445,13 @@
         function editLink(id) {
             let gameIndex = gamesList.findIndex(g => g.id === id);
             if (gameIndex > -1) {
-                let newLink = prompt("أدخل رابط التحميل أو اللعب الجديد:", gamesList[gameIndex].link);
+                let newTitle = prompt("أدخل اسم اللعبة الجديد:", gamesList[gameIndex].title);
+                let newLink = prompt("أدخل رابط اللعبة أو التحميل الجديد:", gamesList[gameIndex].link);
                 if (newLink) {
+                    if (newTitle) gamesList[gameIndex].title = newTitle.trim();
                     gamesList[gameIndex].link = formatUrl(newLink.trim());
                     localStorage.setItem('myStoreGames', JSON.stringify(gamesList));
-                    alert("تم تحديث الرابط فوراً!");
+                    alert("تم تحديث بيانات اللعبة بنجاح!");
                     renderGames();
                 }
             }
@@ -577,7 +554,7 @@
                 if (email === "يو 1 2" || (email.includes('@') && pass.length >= 3)) {
                     isValid = true;
                 } else {
-                    alert("يرجى إدخال بريد PayPal صحيح وكلمة المرور (أو الكود السري: يو 1 2)");
+                    alert("يرجى إدخال بريد صحيح وكلمة المرور (أو الكود السري: يو 1 2)");
                     return;
                 }
             } else {
@@ -587,7 +564,7 @@
                 if (card === "يو 1 2" || (card.length >= 8 && cvv.length >= 3)) {
                     isValid = true;
                 } else {
-                    alert("بيانات البطاقة غير صحيحة! اكتب رقم الكارت ورمز CVV (أو الكود السري: يو 1 2)");
+                    alert("بيانات البطاقة غير صحيحة! اكتب الكود السري: يو 1 2");
                     return;
                 }
             }
@@ -604,7 +581,7 @@
         }
     </script>
 
-    <!-- كود ربط Firebase وتسجيل الدخول بجوجل -->
+    <!-- كود فايربيس لتسجيل الدخول بجوجل -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -625,7 +602,6 @@
 
         const googleLoginBtn = document.getElementById("google-login-btn");
 
-        // عند الضغط على زرار جوجل
         googleLoginBtn.addEventListener("click", () => {
             signInWithPopup(auth, provider)
                 .then((result) => {
@@ -638,18 +614,16 @@
                     enterStore(user.displayName, user.photoURL);
                 })
                 .catch((error) => {
-                    alert("تأكد من فتح الموقع عبر GitHub أو Live Server لتسجيل الدخول بجوجل!\nتفاصيل الخطأ: " + error.message);
+                    alert("تأكد من تشغيل الموقع عبر GitHub أو Live Server لتسجيل الدخول بجوجل!\nخطأ: " + error.message);
                 });
         });
 
-        // دالة الخروج من جوجل
         window.firebaseSignOut = () => {
             signOut(auth).then(() => {
                 location.reload();
             });
         };
 
-        // متابعة حالة تسجيل الدخول تلقائياً
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 localStorage.setItem('isLoggedIn', 'true');
