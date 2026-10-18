@@ -29,7 +29,7 @@
         }
         h1 { margin: 0; font-size: 1.8rem; color: var(--primary-neon); }
         
-        .header-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+        .header-btns { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .header-btn {
             background: var(--card-bg); color: var(--text-main); border: 1px solid var(--primary-neon);
             padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
@@ -38,6 +38,15 @@
         #logout-btn { display: none; border-color: #ff4444; color: #ff4444; }
         #logout-btn:hover { background: #ff4444; color: white; }
 
+        /* تنسيق بروفايل المستخدم في الهيدر */
+        #user-profile-header {
+            display: none; align-items: center; gap: 8px;
+            background: rgba(102, 192, 244, 0.1); padding: 5px 12px;
+            border-radius: 20px; border: 1px solid var(--primary-neon);
+        }
+        #user-pic { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; display: none; }
+        #user-name-display { font-weight: bold; color: var(--primary-neon); font-size: 0.9rem; }
+
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
         #login-section {
@@ -45,6 +54,27 @@
             max-width: 400px; margin: 50px auto; border: 1px solid var(--secondary-neon);
             text-align: center;
         }
+        
+        /* زرار جوجل */
+        .google-btn {
+            background: #ffffff; color: #333; border: none;
+            padding: 12px; border-radius: 4px; cursor: pointer; width: 100%;
+            font-weight: bold; font-size: 1rem; display: flex; align-items: center;
+            justify-content: center; gap: 10px; margin-bottom: 20px; transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-family: inherit;
+        }
+        .google-btn:hover { background: #f1f1f1; transform: translateY(-2px); }
+
+        .divider {
+            display: flex; align-items: center; text-align: center;
+            color: var(--text-muted); margin: 15px 0; font-size: 0.85rem;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; border-bottom: 1px solid var(--secondary-neon);
+        }
+        .divider:not(:empty)::before { margin-left: 10px; }
+        .divider:not(:empty)::after { margin-right: 10px; }
+
         input, textarea, select {
             width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(0,0,0,0.5);
             border: 1px solid var(--text-muted); color: white; border-radius: 4px; box-sizing: border-box; font-family: inherit;
@@ -132,6 +162,11 @@
     <header>
         <h1>Youssef Store 🎮</h1>
         <div class="header-btns">
+            <!-- مكان ظهور صورة واسم المستخدم بعد الدخول -->
+            <div id="user-profile-header">
+                <img id="user-pic" src="" alt="صورة الحساب">
+                <span id="user-name-display"></span>
+            </div>
             <button type="button" class="header-btn" onclick="resetDefaultGames()">🔄 إظهار الألعاب الجديدة</button>
             <button type="button" class="header-btn" onclick="downloadStoreFile()">⬇️ تحميل المتجر</button>
             <button type="button" id="logout-btn" class="header-btn" onclick="logout()">تسجيل خروج</button>
@@ -140,10 +175,19 @@
 
     <div class="container">
         <div id="login-section">
-            <h2 style="color: var(--primary-neon);">تسجيل الدخول</h2>
+            <h2 style="color: var(--primary-neon); margin-top: 0;">مرحباً بك في المتجر</h2>
+            
+            <!-- زرار تسجيل الدخول بجوجل (Firebase) -->
+            <button type="button" id="google-login-btn" class="google-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20" alt="Google">
+                تسجيل الدخول بحساب Google
+            </button>
+
+            <div class="divider">أو الدخول باسم مستخدم (وللمدير)</div>
+
             <input type="text" id="username" placeholder="اسم المستخدم">
             <input type="password" id="password" placeholder="كلمة المرور">
-            <button type="button" class="action-btn" onclick="login()">دخول للمتجر</button>
+            <button type="button" class="action-btn" style="width: 100%;" onclick="login()">دخول للمتجر</button>
         </div>
 
         <div id="store-section">
@@ -247,13 +291,40 @@
         let currentUser = localStorage.getItem('currentUser') || 'عضو بالمتجر';
         let currentGameLink = '';
 
+        // دالة لفتح المتجر وعرض بيانات المستخدم
+        function enterStore(name, picUrl) {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('store-section').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'inline-block';
+            
+            const profileHeader = document.getElementById('user-profile-header');
+            const nameDisplay = document.getElementById('user-name-display');
+            const userPic = document.getElementById('user-pic');
+            
+            profileHeader.style.display = 'flex';
+            nameDisplay.textContent = 'أهلاً، ' + name;
+            
+            if (picUrl) {
+                userPic.src = picUrl;
+                userPic.style.display = 'block';
+            } else {
+                userPic.style.display = 'none';
+            }
+
+            // وضع اسم المستخدم تلقائياً في خانة نشر الألعاب
+            const authorInput = document.getElementById('gAuthor');
+            if (authorInput && !authorInput.value) {
+                authorInput.value = name;
+            }
+
+            renderGames();
+            renderFriends();
+        }
+
         window.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('isLoggedIn') === 'true') {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('store-section').style.display = 'block';
-                document.getElementById('logout-btn').style.display = 'inline-block';
-                renderGames();
-                renderFriends();
+                let savedPic = localStorage.getItem('currentUserPic') || '';
+                enterStore(currentUser, savedPic);
             }
         });
 
@@ -268,6 +339,7 @@
 
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('currentUser', user);
+            localStorage.removeItem('currentUserPic');
             currentUser = user;
             
             if (user === 'Youssef' && pass === '123') {
@@ -280,18 +352,19 @@
                 alert('أهلاً بك يا ' + user + '! يمكنك الآن تصفح المتجر أو نشر ألعابك.');
             }
 
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('store-section').style.display = 'block';
-            document.getElementById('logout-btn').style.display = 'inline-block';
-            renderGames(); 
-            renderFriends();
+            enterStore(user, '');
         }
 
         function logout() {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('isAdmin');
             localStorage.removeItem('currentUser');
-            location.reload();
+            localStorage.removeItem('currentUserPic');
+            if (window.firebaseSignOut) {
+                window.firebaseSignOut();
+            } else {
+                location.reload();
+            }
         }
 
         function resetDefaultGames() {
@@ -378,7 +451,6 @@
             
             alert("تم نشر اللعبة بنجاح باسم (" + author + ")!");
             document.getElementById('gName').value = ''; 
-            document.getElementById('gAuthor').value = '';
             document.getElementById('gLink').value = ''; 
             document.getElementById('gDesc').value = '';
             document.getElementById('gPrice').value = '0';
@@ -530,6 +602,63 @@
                 }, 1500);
             }
         }
+    </script>
+
+    <!-- كود ربط Firebase وتسجيل الدخول بجوجل -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRB20EVDJTgzQzYkl3wxvzMnAGnsi9T0",
+            authDomain: "youssefstore-a9f58.firebaseapp.com",
+            projectId: "youssefstore-a9f58",
+            storageBucket: "youssefstore-a9f58.firebasestorage.app",
+            messagingSenderId: "479822302418",
+            appId: "1:479822302418:web:324e64daeac4cfaef1710b",
+            measurementId: "G-0E06VCQVPD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const googleLoginBtn = document.getElementById("google-login-btn");
+
+        // عند الضغط على زرار جوجل
+        googleLoginBtn.addEventListener("click", () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('currentUser', user.displayName);
+                    localStorage.setItem('currentUserPic', user.photoURL || '');
+                    currentUser = user.displayName;
+                    
+                    enterStore(user.displayName, user.photoURL);
+                })
+                .catch((error) => {
+                    alert("تأكد من فتح الموقع عبر GitHub أو Live Server لتسجيل الدخول بجوجل!\nتفاصيل الخطأ: " + error.message);
+                });
+        });
+
+        // دالة الخروج من جوجل
+        window.firebaseSignOut = () => {
+            signOut(auth).then(() => {
+                location.reload();
+            });
+        };
+
+        // متابعة حالة تسجيل الدخول تلقائياً
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('currentUser', user.displayName);
+                localStorage.setItem('currentUserPic', user.photoURL || '');
+                currentUser = user.displayName;
+                enterStore(user.displayName, user.photoURL);
+            }
+        });
     </script>
 </body>
 </html>
