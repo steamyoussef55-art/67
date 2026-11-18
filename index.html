@@ -1,217 +1,530 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOE GAMES - مدير الموقع</title>
-    <style>
-        :root {
-            --primary: #171a21;
-            --secondary: #1b2838;
-            --accent: #66c0f4;
-            --text: #c7d5e0;
-            --danger: #d9534f;
-            --success: #5cb85c;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOE GAMES - Steam Desktop Edition</title>
+<style>
+:root {
+    --bg-main: #1b2838;
+    --bg-top: #171a21;
+    --bg-panel: #16202d;
+    --bg-dropdown: #2a2e35;
+    --bg-hover: #3d4450;
+    --blue-accent: #1a9fff;
+    --blue-light: #66c0f4;
+    --green-btn: #5c7e10;
+    --green-text: #a4d007;
+    --text-main: #dcdedf;
+    --text-muted: #8f98a0;
+    --danger: #d9534f;
+}
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; user-select: none; }
+body { background: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--secondary);
-            color: var(--text);
-        }
+/* شاشة التحميل الدائرية */
+#splash {
+    position: fixed; inset: 0; background: radial-gradient(circle, #1f2b3a 0%, #11161d 100%);
+    z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+}
+.spinner-ring {
+    width: 90px; height: 90px; border-radius: 50%; border: 4px solid #2a475e;
+    border-top-color: var(--blue-accent); display: flex; align-items: center; justify-content: center;
+    font-size: 38px; animation: spin 1.2s linear infinite;
+}
+.spinner-inner { animation: spinRev 1.2s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes spinRev { 100% { transform: rotate(-360deg); } }
 
-        header {
-            background-color: var(--primary);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--accent);
-        }
+/* الشريط العلوي للبرنامج */
+.title-bar {
+    background: var(--bg-top); height: 36px; display: flex; justify-content: space-between;
+    align-items: center; padding: 0 12px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid #0e1014;
+}
+.menus { display: flex; gap: 4px; position: relative; }
+.menu-item { padding: 5px 10px; cursor: pointer; border-radius: 3px; position: relative; }
+.menu-item:hover { background: var(--bg-hover); color: #fff; }
+.dropdown {
+    display: none; position: absolute; top: 100%; right: 0; background: var(--bg-dropdown);
+    min-width: 210px; box-shadow: 0 8px 20px rgba(0,0,0,0.7); border: 1px solid #444b57; z-index: 500; padding: 4px 0;
+}
+.menu-item:hover .dropdown { display: block; }
+.dropdown div { padding: 8px 14px; color: #dcdedf; font-size: 12px; cursor: pointer; }
+.dropdown div:hover { background: var(--blue-accent); color: #fff; }
+.dropdown hr { border: 0; border-top: 1px solid #3f4652; margin: 4px 0; }
 
-        nav button, .admin-only {
-            background-color: var(--accent);
-            border: none;
-            color: var(--primary);
-            padding: 0.5rem 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-        }
+.top-right-tools { display: flex; align-items: center; gap: 8px; }
+.icon-box { padding: 4px 10px; border-radius: 2px; font-weight: bold; cursor: pointer; font-size: 12px; }
+.megaphone { background: #1e3b52; color: var(--blue-light); }
+.bell { background: #4c6b22; color: var(--a4d007); }
+.profile-pill {
+    background: #222933; padding: 4px 10px; border-radius: 2px; color: var(--blue-light);
+    display: flex; align-items: center; gap: 6px; cursor: pointer; border: 1px solid #2e3846;
+}
 
-        .admin-only {
-            display: none;
-            background-color: var(--success);
-            color: white;
-        }
+/* التبويبات الرئيسية */
+.main-tabs {
+    background: var(--bg-top); padding: 6px 24px 12px; display: flex; gap: 22px;
+    font-size: 16px; font-weight: 800; letter-spacing: 0.5px;
+}
+.main-tabs span { color: var(--text-muted); cursor: pointer; padding-bottom: 4px; border-bottom: 3px solid transparent; }
+.main-tabs span.active, .main-tabs span:hover { color: var(--blue-accent); border-bottom-color: var(--blue-accent); }
 
-        .container {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: auto;
-        }
+/* شريط المتجر والبحث */
+.store-subbar {
+    background: linear-gradient(90deg, #3a6ea5 0%, #1b4f82 50%, #0f216e 100%);
+    padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; position: relative;
+}
+.sub-links { display: flex; gap: 18px; font-size: 13px; font-weight: bold; color: #fff; }
+.sub-links span { cursor: pointer; opacity: 0.9; }
+.sub-links span:hover { opacity: 1; text-decoration: underline; }
 
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
+.search-wrap { position: relative; width: 320px; }
+.search-wrap input {
+    width: 100%; background: #316282; border: 1px solid #16202d; color: #fff;
+    padding: 6px 12px; border-radius: 3px; font-size: 13px; outline: none;
+}
+.search-wrap input::placeholder { color: #9ac3de; font-style: italic; }
+.search-results {
+    display: none; position: absolute; top: 105%; left: 0; width: 420px; background: #2a2e35;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 400; border: 1px solid #454d59; padding: 10px;
+}
+.s-row {
+    display: flex; align-items: center; justify-content: space-between; padding: 8px;
+    border-bottom: 1px solid #383e47; cursor: pointer; gap: 10px;
+}
+.s-row:hover { background: #3d4450; }
+.discount-badge { background: #4c6b22; color: #a4d007; padding: 2px 6px; font-weight: bold; font-size: 12px; }
 
-        .game-card {
-            background-color: var(--primary);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+/* منطقة المحتوى */
+.workspace { flex: 1; overflow-y: auto; padding: 20px 28px; }
+.view { display: none; }
+.view.active { display: block; }
 
-        .game-card img {
-            max-width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
+.section-hdr { font-size: 14px; color: #fff; margin: 16px 0 10px; letter-spacing: 0.5px; display: flex; justify-content: space-between; }
+.games-list { display: flex; flex-direction: column; gap: 10px; }
+.steam-row-card {
+    background: rgba(22, 32, 45, 0.9); border: 1px solid #2a475e; display: flex;
+    align-items: center; justify-content: space-between; padding: 10px 16px; border-radius: 3px; transition: 0.15s;
+}
+.steam-row-card:hover { background: #223449; border-color: var(--blue-light); }
+.game-left { display: flex; align-items: center; gap: 15px; }
+.game-thumb {
+    width: 120px; height: 56px; background: linear-gradient(135deg, #2a475e, #171a21);
+    display: flex; align-items: center; justify-content: center; font-size: 28px; border-radius: 2px;
+}
+.tag-pill { background: #293646; color: #8f98a0; font-size: 11px; padding: 2px 6px; border-radius: 2px; margin-left: 4px; }
+.btn-buy-steam {
+    background: var(--green-btn); color: #d2efa9; border: none; padding: 8px 16px;
+    font-weight: bold; font-size: 13px; border-radius: 2px; cursor: pointer; text-decoration: none;
+}
+.btn-buy-steam:hover { background: #75b022; color: #fff; }
+.btn-del-admin { background: var(--danger); color: #fff; border: none; padding: 8px 14px; font-size: 12px; border-radius: 2px; cursor: pointer; display: none; }
 
-        .delete-btn {
-            background-color: var(--danger);
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            cursor: pointer;
-            display: none;
-        }
+.net-panel { background: #10151c; border: 1px solid #2a333f; padding: 18px; border-radius: 4px; margin-bottom: 18px; }
+.bars { display: flex; align-items: flex-end; gap: 4px; height: 70px; margin-top: 12px; }
+.bar { width: 10px; background: var(--blue-accent); border-radius: 2px 2px 0 0; }
 
-        #login-section {
-            background-color: var(--primary);
-            padding: 2rem;
-            border-radius: 8px;
-            width: 300px;
-            margin: 2rem auto;
-            text-align: center;
-        }
+.bottom-bar {
+    background: var(--bg-top); height: 38px; border-top: 1px solid #2a303a; padding: 0 18px;
+    display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted);
+}
+.bottom-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 10px; border-radius: 3px; }
+.bottom-btn:hover { background: var(--bg-hover); color: #fff; }
 
-        input {
-            width: 100%;
-            padding: 0.5rem;
-            margin: 0.5rem 0;
-            box-sizing: border-box;
-        }
-    </style>
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; z-index: 800; }
+.modal-win { background: #22262d; border: 1px solid #48505e; width: 460px; padding: 22px; border-radius: 4px; box-shadow: 0 15px 40px rgba(0,0,0,0.9); }
+.modal-win input, .modal-win select { width: 100%; background: #14171c; border: 1px solid #3b424e; color: #fff; padding: 9px; margin: 6px 0 14px; border-radius: 2px; }
+</style>
 </head>
 <body>
 
-<header>
-    <h1>JOE GAMES</h1>
-    <div>
-        <span id="user-status">زائر</span>
-        <button onclick="toggleLogin()" id="login-btn">دخول المدير</button>
+<div id="splash">
+    <div class="spinner-ring"><div class="spinner-inner">🎮</div></div>
+    <div style="background:#222933; padding:6px 16px; border-radius:3px; font-weight:bold; color:#fff;">
+        ❓ <span id="splashUser">steamyoussef55</span>
     </div>
-</header>
+    <span style="font-size:12px; color:#8f98a0;">جاري تحميل منصة JOE GAMES...</span>
+</div>
 
-<div class="container">
-    <div id="login-section" style="display: none;">
-        <h3>تسجيل دخول المدير</h3>
-        <input type="text" id="username" placeholder="اسم المستخدم">
-        <input type="password" id="password" placeholder="كلمة المرور">
-        <button onclick="handleLogin()">دخول</button>
+<div class="title-bar">
+    <div class="menus">
+        <div class="menu-item"><b>Joe Games</b>
+            <div class="dropdown">
+                <div id="loginMenuText" onclick="openModal('loginModal')">تسجيل دخول المدير...</div>
+                <div onclick="showToast('تم تفعيل وضع عدم الاتصال')">العمل بدون إنترنت...</div>
+                <hr>
+                <div onclick="filterBy('all')">إعدادات المتجر</div>
+                <div onclick="location.reload()">إعادة تشغيل المنصة</div>
+            </div>
+        </div>
+        <div class="menu-item">عرض
+            <div class="dropdown">
+                <div onclick="switchView('library')">المكتبة (Library)</div>
+                <div onclick="switchView('downloads')">التنزيلات (Downloads)</div>
+                <div onclick="switchView('community')">الأصدقاء والدردشة</div>
+                <div onclick="switchView('store')">أخبار التحديثات</div>
+            </div>
+        </div>
+        <div class="menu-item">الأصدقاء
+            <div class="dropdown">
+                <div onclick="switchView('community')">عرض قائمة الأصدقاء</div>
+                <div onclick="switchView('community')">إضافة صديق...</div>
+                <hr>
+                <div onclick="setStatus('متصل')">✔ متصل</div>
+                <div onclick="setStatus('بالخارج')">بالخارج</div>
+                <div onclick="setStatus('مخفي')">مخفي</div>
+            </div>
+        </div>
+        <div class="menu-item">الألعاب
+            <div class="dropdown">
+                <div onclick="switchView('library')">عرض مكتبة الألعاب</div>
+                <div id="addGameMenuText" style="opacity:0.5; cursor:not-allowed;">+ إضافة لعبة للمكتبة (للمدير فقط)</div>
+                <hr>
+                <div onclick="openModal('loginModal')">تسجيل الدخول بصلاحيات المدير</div>
+            </div>
+        </div>
+        <div class="menu-item" onclick="alert('JOE GAMES Desktop Edition - تصميم يوسف')">مساعدة</div>
     </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>مكتبة الألعاب</h2>
-        <button class="admin-only" id="add-game-btn" onclick="showAddGameModal()">+ إضافة لعبة</button>
-    </div>
-
-    <div class="games-grid" id="games-container">
-        <!-- الألعاب هتظهر هنا -->
+    <div class="top-right-tools">
+        <span class="icon-box megaphone" onclick="showToast('لا توجد إعلانات جديدة')">📢</span>
+        <span class="icon-box bell" onclick="showToast('مرحباً بك في منصتك الخاصة')">🔔</span>
+        <div class="profile-pill" onclick="openModal('loginModal')">
+            <span id="userStatusDot" style="color:#75b022;">●</span>
+            <span id="topUserName">steamyoussef55</span> ▾
+        </div>
     </div>
 </div>
 
-<!-- مودال إضافة لعبة بسيط -->
-<div id="add-modal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: var(--primary); padding: 2rem; border-radius: 8px; border: 1px solid var(--accent);">
-    <h3>إضافة لعبة جديدة</h3>
-    <input type="text" id="game-name" placeholder="اسم اللعبة">
-    <input type="text" id="game-image" placeholder="رابط الصورة">
-    <input type="text" id="game-url" placeholder="رابط التحميل">
-    <button onclick="addGame()">حفظ</button>
-    <button onclick="document.getElementById('add-modal').style.display='none'">إلغاء</button>
+<div class="main-tabs">
+    <span id="tab-store" class="active" onclick="switchView('store')">المتجر</span>
+    <span id="tab-library" onclick="switchView('library')">المكتبة</span>
+    <span id="tab-community" onclick="switchView('community')">المجتمع</span>
+    <span id="tab-downloads" onclick="switchView('downloads')">STEAMYOUSSEF55</span>
+</div>
+
+<div class="store-subbar">
+    <div class="sub-links">
+        <span onclick="filterBy('all')">تصفح الكل</span>
+        <span onclick="filterBy('free')">مجانية للعب</span>
+        <span onclick="filterBy('paid')">ألعاب مدفوعة</span>
+        <span onclick="filterBy('mobile')">ألعاب موبايل</span>
+    </div>
+    <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="ابحث في المتجر..." onkeyup="liveSearch()" onfocus="liveSearch()">
+        <div class="search-results" id="searchDropdown"></div>
+    </div>
+</div>
+
+<div class="workspace" onclick="document.getElementById('searchDropdown').style.display='none'">
+
+    <div id="view-store" class="view active">
+        <div class="section-hdr">
+            <span>🔥 الألعاب المميزة والأكثر بحثاً</span>
+            <span id="filterLabel" style="color:var(--blue-light);">عرض الكل</span>
+        </div>
+        <div class="games-list" id="storeList"></div>
+    </div>
+
+    <div id="view-library" class="view">
+        <div class="section-hdr"><span>📚 مكتبة ألعابك الخاصة (MY LIBRARY)</span></div>
+        <div class="games-list" id="libList"></div>
+    </div>
+
+    <div id="view-community" class="view">
+        <div class="section-hdr"><span>👥 قائمة الأصدقاء والدردشة</span></div>
+        <div style="display:flex; gap:10px; max-width:400px; margin-bottom:15px;">
+            <input type="text" id="friendNameIn" placeholder="اكتب اسم صديقك..." style="flex:1; background:#10151c; border:1px solid #2a475e; color:#fff; padding:8px;">
+            <button class="btn-buy-steam" onclick="addFriend()">+ إضافة صديق</button>
+        </div>
+        <div id="friendsContainer" class="games-list"></div>
+    </div>
+
+    <div id="view-downloads" class="view">
+        <div class="net-panel">
+            <div style="display:flex; justify-content:space-between; font-size:13px;">
+                <span>📶 الشبكة: <b style="color:var(--blue-light);">0.0 bps</b></span>
+                <span>⚡ الذروة: <b>0.0 bps</b></span>
+                <span>💾 القرص: <b style="color:#a4d007;">جاهز</b></span>
+            </div>
+            <div class="bars"><div class="bar" style="height:10%"></div></div>
+        </div>
+        <div class="section-hdr"><span>التنزيلات القادمة (0)</span></div>
+        <p style="color:var(--text-muted); font-size:13px;">لا توجد تنزيلات في قائمة الانتظار حالياً.</p>
+    </div>
+
+</div>
+
+<div class="bottom-bar">
+    <div class="bottom-btn" onclick="switchView('community')"><span>💬</span> الأصدقاء والدردشة</div>
+    <div class="bottom-btn" onclick="switchView('downloads')"><span>⬇️</span> إدارة التنزيلات</div>
+    <div class="bottom-btn" id="addGameFooterBtn" style="color:#8f98a0; cursor:not-allowed;" onclick="checkAddGame()">
+        <span style="background:#2a303a; padding:1px 6px; border-radius:2px;">+</span> إضافة لعبة (للمدير فقط)
+    </div>
+</div>
+
+<!-- نافذة تسجيل دخول المدير -->
+<div class="modal" id="loginModal">
+    <div class="modal-win">
+        <h3 id="modalTitle" style="color:#fff; margin-bottom:12px;">🔒 لوحة تحكم المدير</h3>
+        <p id="adminStatusMsg" style="font-size:12px; color:#8f98a0; margin-bottom:14px;">أدخل بيانات المدير للتحكم الكامل في الألعاب.</p>
+        
+        <div id="loginFormArea">
+            <label style="font-size:12px; color:#66c0f4;">اسم المستخدم:</label>
+            <input type="text" id="adminUser" placeholder="يوسف123">
+            
+            <label style="font-size:12px; color:#66c0f4;">كلمة المرور:</label>
+            <input type="password" id="adminPass" placeholder="•••••••••">
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn-buy-steam" style="flex:1; background:#5c7e10;" onclick="verifyAdmin()">تسجيل الدخول</button>
+                <button class="btn-buy-steam" style="background:#3d4450; color:#fff;" onclick="closeModal('loginModal')">إلغاء</button>
+            </div>
+        </div>
+
+        <div id="adminPanelArea" style="display:none;">
+            <div style="background:#14171c; padding:12px; border-radius:3px; margin-bottom:15px; border-right:3px solid #a4d007;">
+                ✅ مرحباً بك يا مدير المنصة. لديك الآن صلاحيات كاملة لإضافة وحذف الألعاب.
+            </div>
+            <button class="btn-buy-steam" style="width:100%; margin-bottom:10px;" onclick="openAddModal()">➕ إضافة لعبة جديدة للمتجر</button>
+            <button class="btn-buy-steam" style="width:100%; background:#d9534f;" onclick="logoutAdmin()">تسجيل الخروج من الإدارة</button>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة إضافة لعبة -->
+<div class="modal" id="addModal">
+    <div class="modal-win">
+        <h3 style="color:#fff; margin-bottom:12px;">➕ إضافة لعبة لمتجر JOE GAMES</h3>
+        <label style="font-size:12px; color:#8f98a0;">اسم اللعبة:</label>
+        <input type="text" id="gTitle" placeholder="مثال: Minecraft">
+        
+        <label style="font-size:12px; color:#8f98a0;">التصنيف:</label>
+        <select id="gCat">
+            <option value="free">مجانية للعب</option>
+            <option value="paid">لعبة مدفوعة</option>
+            <option value="mobile">ألعاب موبايل</option>
+        </select>
+
+        <label style="font-size:12px; color:#8f98a0;">السعر:</label>
+        <input type="text" id="gPrice" placeholder="مجاني">
+
+        <label style="font-size:12px; color:#8f98a0;">الخصم (اختياري):</label>
+        <input type="text" id="gDisc" placeholder="-50%">
+
+        <label style="font-size:12px; color:#8f98a0;">رابط التحميل أو الشراء:</label>
+        <input type="url" id="gUrl" placeholder="https://...">
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="btn-buy-steam" style="flex:1;" onclick="saveNewGame()">نشر اللعبة</button>
+            <button class="btn-buy-steam" style="background:#3d4450; color:#fff;" onclick="closeModal('addModal')">إلغاء</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    let isAdmin = false;
-    let games = [
-        { id: 1, name: "لعبة تجريبية 1", image: "https://via.placeholder.com/150", url: "#" },
-        { id: 2, name: "لعبة تجريبية 2", image: "https://via.placeholder.com/150", url: "#" }
-    ];
+setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1200);
 
-    function renderGames() {
-        const container = document.getElementById('games-container');
-        container.innerHTML = '';
-        games.forEach(game => {
-            const card = document.createElement('div');
-            card.className = 'game-card';
-            card.innerHTML = `
-                <img src="${game.image}" alt="${game.name}">
-                <h3>${game.name}</h3>
-                <a href="${game.url}" style="color: var(--accent);">تحميل</a>
-                <button class="delete-btn" style="display: ${isAdmin ? 'block' : 'none'};" onclick="deleteGame(${game.id})">حذف</button>
-            `;
-            container.appendChild(card);
-        });
+let isAdmin = false;
+
+const defaultGames = [
+    { id: 1, title: 'Grand Theft Auto V', cat: 'paid', price: '29.99$', disc: '', icon: '🚗', tags: ['عالم مفتوح'], url: '#' },
+    { id: 2, title: 'PUBG Mobile', cat: 'mobile', price: 'مجاني', disc: '', icon: '🔫', tags: ['أكشن'], url: '#' }
+];
+
+function getGames() {
+    const s = localStorage.getItem('joe_steam_full_games');
+    if (!s) { localStorage.setItem('joe_steam_full_games', JSON.stringify(defaultGames)); return defaultGames; }
+    return JSON.parse(s);
+}
+
+let currentFilter = 'all';
+
+function renderStore() {
+    const list = getGames().filter(g => currentFilter === 'all' || g.cat === currentFilter);
+    document.getElementById('storeList').innerHTML = list.map(g => `
+        <div class="steam-row-card">
+            <div class="game-left">
+                <div class="game-thumb">${g.icon}</div>
+                <div>
+                    <h3 style="color:#fff; font-size:15px; margin-bottom:5px;">${g.title}</h3>
+                    <div>${(g.tags || ['لعبة']).map(t => `<span class="tag-pill">${t}</span>`).join('')}</div>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+                ${g.disc ? `<span class="discount-badge">${g.disc}</span>` : ''}
+                <span style="color:#fff; font-weight:bold; font-size:14px;">${g.price}</span>
+                <a href="${g.url}" target="_blank" onclick="addToLib(${g.id})" class="btn-buy-steam">تحميل / فتح</a>
+                <button class="btn-del-admin" style="display: ${isAdmin ? 'block' : 'none'};" onclick="delGame(${g.id})">حذف</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function verifyAdmin() {
+    const u = document.getElementById('adminUser').value.trim();
+    const p = document.getElementById('adminPass').value.trim();
+    if (u === 'يوسف123' && p === '123456789') {
+        isAdmin = true;
+        document.getElementById('topUserName').innerText = 'يوسف123 (مدير)';
+        document.getElementById('splashUser').innerText = 'يوسف123';
+        document.getElementById('loginMenuText').innerText = 'لوحة تحكم المدير';
+        document.getElementById('addGameMenuText').style.opacity = '1';
+        document.getElementById('addGameMenuText').style.cursor = 'pointer';
+        document.getElementById('addGameMenuText').setAttribute('onclick', 'openAddModal()');
+        
+        document.getElementById('addGameFooterBtn').style.color = '#fff';
+        document.getElementById('addGameFooterBtn').style.cursor = 'pointer';
+        document.getElementById('addGameFooterBtn').setAttribute('onclick', 'openAddModal()');
+
+        document.getElementById('loginFormArea').style.display = 'none';
+        document.getElementById('adminPanelArea').style.display = 'block';
+        document.getElementById('modalTitle').innerText = '👨‍💻 مرحباً بك يا مدير';
+        renderStore();
+        showToast('تم تسجيل دخول المدير بنجاح!');
+    } else {
+        alert('بيانات الدخول غير صحيحة!');
     }
+}
 
-    function toggleLogin() {
-        const loginSection = document.getElementById('login-section');
-        loginSection.style.display = loginSection.style.display === 'none' ? 'block' : 'none';
+function logoutAdmin() {
+    isAdmin = false;
+    document.getElementById('topUserName').innerText = 'steamyoussef55';
+    document.getElementById('splashUser').innerText = 'steamyoussef55';
+    document.getElementById('loginMenuText').innerText = 'تسجيل دخول المدير...';
+    document.getElementById('addGameMenuText').style.opacity = '0.5';
+    document.getElementById('addGameMenuText').style.cursor = 'not-allowed';
+    document.getElementById('addGameMenuText').removeAttribute('onclick');
+
+    document.getElementById('addGameFooterBtn').style.color = '#8f98a0';
+    document.getElementById('addGameFooterBtn').style.cursor = 'not-allowed';
+    document.getElementById('addGameFooterBtn').removeAttribute('onclick');
+
+    document.getElementById('adminUser').value = '';
+    document.getElementById('adminPass').value = '';
+    document.getElementById('loginFormArea').style.display = 'block';
+    document.getElementById('adminPanelArea').style.display = 'none';
+    document.getElementById('modalTitle').innerText = '🔒 لوحة تحكم المدير';
+    renderStore();
+    closeModal('loginModal');
+    showToast('تم تسجيل الخروج.');
+}
+
+function checkAddGame() {
+    if (!isAdmin) {
+        openModal('loginModal');
     }
+}
 
-    function handleLogin() {
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
+function saveNewGame() {
+    if (!isAdmin) return alert('غير مصرح لك بالإضافة!');
+    const title = document.getElementById('gTitle').value.trim();
+    const cat = document.getElementById('gCat').value;
+    const price = document.getElementById('gPrice').value.trim() || 'مجاني';
+    const disc = document.getElementById('gDisc').value.trim();
+    const url = document.getElementById('gUrl').value.trim() || '#';
+    if (!title) return alert('اكتب اسم اللعبة!');
 
-        if (user === 'يوسف13' && pass === '123456789') {
-            isAdmin = true;
-            document.getElementById('user-status').innerText = 'المSير (يوسف13)';
-            document.getElementById('login-btn').innerText = 'خروج';
-            document.getElementById('login-section').style.display = 'none';
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'inline-block');
-            renderGames();
-            alert('تم تسجيل دخول المدير بنجاح!');
-        } else {
-            alert('بيانات الدخول غير صحيحة.');
-        }
-    }
+    const games = getGames();
+    games.unshift({ id: Date.now(), title, cat, price, disc, icon: '🎮', tags: ['جديد'], url });
+    localStorage.setItem('joe_steam_full_games', JSON.stringify(games));
+    closeModal('addModal');
+    renderStore();
+    showToast('تمت إضافة اللعبة للمتجر بنجاح!');
+}
 
-    function showAddGameModal() {
-        document.getElementById('add-modal').style.display = 'block';
-    }
+function delGame(id) {
+    if (!isAdmin) return alert('غير مصرح لك بالحذف!');
+    const games = getGames().filter(g => g.id !== id);
+    localStorage.setItem('joe_steam_full_games', JSON.stringify(games));
+    renderStore();
+    renderLib();
+    showToast('تم حذف اللعبة.');
+}
 
-    function addGame() {
-        const name = document.getElementById('game-name').value;
-        const image = document.getElementById('game-image').value;
-        const url = document.getElementById('game-url').value;
+function filterBy(cat) {
+    currentFilter = cat;
+    switchView('store');
+    const names = { all: 'عرض الكل', free: 'مجانية للعب', paid: 'ألعاب مدفوعة', mobile: 'ألعاب موبايل' };
+    document.getElementById('filterLabel').innerText = names[cat];
+    renderStore();
+}
 
-        if (name && url) {
-            games.push({ id: Date.now(), name, image: image || 'https://via.placeholder.com/150', url });
-            renderGames();
-            document.getElementById('add-modal').style.display = 'none';
-        } else {
-            alert('يرجى ملء البيانات المطلوبة.');
-        }
-    }
+function liveSearch() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const box = document.getElementById('searchDropdown');
+    if (!q) { box.style.display = 'none'; return; }
+    const matches = getGames().filter(g => g.title.toLowerCase().includes(q));
+    box.style.display = 'block';
+    box.innerHTML = matches.length ? matches.map(g => `
+        <div class="s-row" onclick="window.open('${g.url}', '_blank')">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:22px;">${g.icon}</span>
+                <div>
+                    <div style="color:#fff; font-weight:bold; font-size:13px;">${g.title}</div>
+                    <div style="color:#a4d007; font-size:12px;">${g.price}</div>
+                </div>
+            </div>
+            ${g.disc ? `<span class="discount-badge">${g.disc}</span>` : ''}
+        </div>
+    `).join('') : '<div style="padding:8px; font-size:12px; color:#8f98a0;">لا توجد نتائج مطابقة</div>';
+}
 
-    function deleteGame(id) {
-        games = games.filter(g => g.id !== id);
-        renderGames();
-    }
+function addToLib(id) {
+    let lib = JSON.parse(localStorage.getItem('joe_steam_full_lib') || '[1]');
+    if (!lib.includes(id)) { lib.push(id); localStorage.setItem('joe_steam_full_lib', JSON.stringify(lib)); renderLib(); }
+}
 
-    renderGames();
+function renderLib() {
+    const ids = JSON.parse(localStorage.getItem('joe_steam_full_lib') || '[1]');
+    const list = getGames().filter(g => ids.includes(g.id));
+    document.getElementById('libList').innerHTML = list.map(g => `
+        <div class="steam-row-card">
+            <div class="game-left"><div class="game-thumb">${g.icon}</div><h3 style="color:#fff;">${g.title}</h3></div>
+            <a href="${g.url}" target="_blank" class="btn-buy-steam">▶ تشغيل</a>
+        </div>
+    `).join('');
+}
+
+function addFriend() {
+    const n = document.getElementById('friendNameIn').value.trim();
+    if (!n) return;
+    let f = JSON.parse(localStorage.getItem('joe_steam_full_friends') || '["يحيى (Nio Nio)"]');
+    f.push(n); localStorage.setItem('joe_steam_full_friends', JSON.stringify(f));
+    document.getElementById('friendNameIn').value = '';
+    renderFriends();
+}
+
+function renderFriends() {
+    let f = JSON.parse(localStorage.getItem('joe_steam_full_friends') || '["يحيى (Nio Nio)"]');
+    document.getElementById('friendsContainer').innerHTML = f.map(name => `
+        <div class="steam-row-card">
+            <span style="color:#66c0f4; font-weight:bold;">👤 ${name}</span>
+            <span style="color:#a4d007; font-size:12px;">متصل - في Joe Games</span>
+        </div>
+    `).join('');
+}
+
+function switchView(v) {
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.main-tabs span').forEach(el => el.classList.remove('active'));
+    document.getElementById('view-' + v).classList.add('active');
+    if (document.getElementById('tab-' + v)) document.getElementById('tab-term').classList.add('active');
+}
+
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function openAddModal() {
+    closeModal('loginModal');
+    openModal('addModal');
+}
+function setStatus(s) { showToast('تم تغيير حالتك إلى: ' + s); }
+function showToast(m) { alert(m); }
+
+renderStore();
+renderLib();
+renderFriends();
 </script>
-
 </body>
 </html>
