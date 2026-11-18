@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JOE GAMES - Steam Desktop Edition</title>
+<title>JOE GAMES - المنصة الرئيسية</title>
 <style>
 :root {
     --bg-main: #1b2838;
@@ -22,7 +22,7 @@
 * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; user-select: none; }
 body { background: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-/* شاشة التحميل الدائرية */
+/* شاشة التحميل */
 #splash {
     position: fixed; inset: 0; background: radial-gradient(circle, #1f2b3a 0%, #11161d 100%);
     z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
@@ -36,7 +36,7 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
 @keyframes spin { 100% { transform: rotate(360deg); } }
 @keyframes spinRev { 100% { transform: rotate(-360deg); } }
 
-/* الشريط العلوي للبرنامج */
+/* الشريط العلوي */
 .title-bar {
     background: var(--bg-top); height: 36px; display: flex; justify-content: space-between;
     align-items: center; padding: 0 12px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid #0e1014;
@@ -70,7 +70,7 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
 .main-tabs span { color: var(--text-muted); cursor: pointer; padding-bottom: 4px; border-bottom: 3px solid transparent; }
 .main-tabs span.active, .main-tabs span:hover { color: var(--blue-accent); border-bottom-color: var(--blue-accent); }
 
-/* شريط المتجر والبحث */
+/* شريط البحث */
 .store-subbar {
     background: linear-gradient(90deg, #3a6ea5 0%, #1b4f82 50%, #0f216e 100%);
     padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; position: relative;
@@ -142,16 +142,16 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
 <div id="splash">
     <div class="spinner-ring"><div class="spinner-inner">🎮</div></div>
     <div style="background:#222933; padding:6px 16px; border-radius:3px; font-weight:bold; color:#fff;">
-        ❓ <span id="splashUser">steamyoussef55</span>
+        مرحباً بكم في JOE GAMES
     </div>
-    <span style="font-size:12px; color:#8f98a0;">جاري تحميل منصة JOE GAMES...</span>
+    <span style="font-size:12px; color:#8f98a0;">جاري تحميل المنصة...</span>
 </div>
 
 <div class="title-bar">
     <div class="menus">
         <div class="menu-item"><b>Joe Games</b>
             <div class="dropdown">
-                <div id="loginMenuText" onclick="openModal('loginModal')">تسجيل دخول المدير...</div>
+                <div id="loginMenuText" onclick="openModal('loginModal')">تسجيل دخول أو إنشاء حساب...</div>
                 <div onclick="showToast('تم تفعيل وضع عدم الاتصال')">العمل بدون إنترنت...</div>
                 <hr>
                 <div onclick="filterBy('all')">إعدادات المتجر</div>
@@ -184,15 +184,15 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
                 <div onclick="openModal('loginModal')">تسجيل الدخول بصلاحيات المدير</div>
             </div>
         </div>
-        <div class="menu-item" onclick="alert('JOE GAMES Desktop Edition - تصميم يوسف')">مساعدة</div>
+        <div class="menu-item" onclick="alert('JOE GAMES Platform Edition')">مساعدة</div>
     </div>
 
     <div class="top-right-tools">
         <span class="icon-box megaphone" onclick="showToast('لا توجد إعلانات جديدة')">📢</span>
-        <span class="icon-box bell" onclick="showToast('مرحباً بك في منصتك الخاصة')">🔔</span>
+        <span class="icon-box bell" onclick="showToast('أهلاً بك في منصتك')">🔔</span>
         <div class="profile-pill" onclick="openModal('loginModal')">
             <span id="userStatusDot" style="color:#75b022;">●</span>
-            <span id="topUserName">steamyoussef55</span> ▾
+            <span id="topUserName">تسجيل دخول أو إنشاء حساب</span> ▾
         </div>
     </div>
 </div>
@@ -201,7 +201,7 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
     <span id="tab-store" class="active" onclick="switchView('store')">المتجر</span>
     <span id="tab-library" onclick="switchView('library')">المكتبة</span>
     <span id="tab-community" onclick="switchView('community')">المجتمع</span>
-    <span id="tab-downloads" onclick="switchView('downloads')">STEAMYOUSSEF55</span>
+    <span id="tab-downloads" onclick="switchView('downloads')">المدير</span>
 </div>
 
 <div class="store-subbar">
@@ -221,14 +221,14 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
 
     <div id="view-store" class="view active">
         <div class="section-hdr">
-            <span>🔥 الألعاب المميزة والأكثر بحثاً</span>
+            <span>🔥 الألعاب المتاحة</span>
             <span id="filterLabel" style="color:var(--blue-light);">عرض الكل</span>
         </div>
         <div class="games-list" id="storeList"></div>
     </div>
 
     <div id="view-library" class="view">
-        <div class="section-hdr"><span>📚 مكتبة ألعابك الخاصة (MY LIBRARY)</span></div>
+        <div class="section-hdr"><span>📚 مكتبة الألعاب الخاصة</span></div>
         <div class="games-list" id="libList"></div>
     </div>
 
@@ -296,7 +296,7 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
 <!-- نافذة إضافة لعبة -->
 <div class="modal" id="addModal">
     <div class="modal-win">
-        <h3 style="color:#fff; margin-bottom:12px;">➕ إضافة لعبة لمتجر JOE GAMES</h3>
+        <h3 style="color:#fff; margin-bottom:12px;">➕ إضافة لعبة جديدة</h3>
         <label style="font-size:12px; color:#8f98a0;">اسم اللعبة:</label>
         <input type="text" id="gTitle" placeholder="مثال: Minecraft">
         
@@ -324,18 +324,13 @@ body { background: var(--bg-main); color: var(--text-main); height: 100vh; displ
 </div>
 
 <script>
-setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1200);
+setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1000);
 
-let isAdmin = false;
-
-const defaultGames = [
-    { id: 1, title: 'Grand Theft Auto V', cat: 'paid', price: '29.99$', disc: '', icon: '🚗', tags: ['عالم مفتوح'], url: '#' },
-    { id: 2, title: 'PUBG Mobile', cat: 'mobile', price: 'مجاني', disc: '', icon: '🔫', tags: ['أكشن'], url: '#' }
-];
+let isAdmin = localStorage.getItem('joe_admin_logged') === 'true';
 
 function getGames() {
-    const s = localStorage.getItem('joe_steam_full_games');
-    if (!s) { localStorage.setItem('joe_steam_full_games', JSON.stringify(defaultGames)); return defaultGames; }
+    const s = localStorage.getItem('joe_steam_empty_games');
+    if (!s) { localStorage.setItem('joe_steam_empty_games', JSON.stringify([])); return []; }
     return JSON.parse(s);
 }
 
@@ -343,7 +338,12 @@ let currentFilter = 'all';
 
 function renderStore() {
     const list = getGames().filter(g => currentFilter === 'all' || g.cat === currentFilter);
-    document.getElementById('storeList').innerHTML = list.map(g => `
+    const container = document.getElementById('storeList');
+    if (list.length === 0) {
+        container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted);">لا توجد ألعاب حالياً. اضغط على "+ إضافة لعبة" لإضافة أول لعبة للمتجر!</div>';
+        return;
+    }
+    container.innerHTML = list.map(g => `
         <div class="steam-row-card">
             <div class="game-left">
                 <div class="game-thumb">${g.icon}</div>
@@ -362,13 +362,11 @@ function renderStore() {
     `).join('');
 }
 
-function verifyAdmin() {
-    const u = document.getElementById('adminUser').value.trim();
-    const p = document.getElementById('adminPass').value.trim();
-    if (u === 'يوسف123' && p === '123456789') {
-        isAdmin = true;
-        document.getElementById('topUserName').innerText = 'يوسف123 (مدير)';
-        document.getElementById('splashUser').innerText = 'يوسف123';
+function updateAdminUI() {
+    const headerName = document.getElementById('topUserName');
+    
+    if (isAdmin) {
+        headerName.innerText = 'لوحة التحكم (مدير)';
         document.getElementById('loginMenuText').innerText = 'لوحة تحكم المدير';
         document.getElementById('addGameMenuText').style.opacity = '1';
         document.getElementById('addGameMenuText').style.cursor = 'pointer';
@@ -377,7 +375,26 @@ function verifyAdmin() {
         document.getElementById('addGameFooterBtn').style.color = '#fff';
         document.getElementById('addGameFooterBtn').style.cursor = 'pointer';
         document.getElementById('addGameFooterBtn').setAttribute('onclick', 'openAddModal()');
+    } else {
+        headerName.innerText = 'تسجيل دخول أو إنشاء حساب';
+        document.getElementById('loginMenuText').innerText = 'تسجيل دخول أو إنشاء حساب...';
+        document.getElementById('addGameMenuText').style.opacity = '0.5';
+        document.getElementById('addGameMenuText').style.cursor = 'not-allowed';
+        document.getElementById('addGameMenuText').removeAttribute('onclick');
 
+        document.getElementById('addGameFooterBtn').style.color = '#8f98a0';
+        document.getElementById('addGameFooterBtn').style.cursor = 'not-allowed';
+        document.getElementById('addGameFooterBtn').removeAttribute('onclick');
+    }
+}
+
+function verifyAdmin() {
+    const u = document.getElementById('adminUser').value.trim();
+    const p = document.getElementById('adminPass').value.trim();
+    if (u === 'يوسف123' && p === '123456789') {
+        isAdmin = true;
+        localStorage.setItem('joe_admin_logged', 'true');
+        updateAdminUI();
         document.getElementById('loginFormArea').style.display = 'none';
         document.getElementById('adminPanelArea').style.display = 'block';
         document.getElementById('modalTitle').innerText = '👨‍💻 مرحباً بك يا مدير';
@@ -390,17 +407,8 @@ function verifyAdmin() {
 
 function logoutAdmin() {
     isAdmin = false;
-    document.getElementById('topUserName').innerText = 'steamyoussef55';
-    document.getElementById('splashUser').innerText = 'steamyoussef55';
-    document.getElementById('loginMenuText').innerText = 'تسجيل دخول المدير...';
-    document.getElementById('addGameMenuText').style.opacity = '0.5';
-    document.getElementById('addGameMenuText').style.cursor = 'not-allowed';
-    document.getElementById('addGameMenuText').removeAttribute('onclick');
-
-    document.getElementById('addGameFooterBtn').style.color = '#8f98a0';
-    document.getElementById('addGameFooterBtn').style.cursor = 'not-allowed';
-    document.getElementById('addGameFooterBtn').removeAttribute('onclick');
-
+    localStorage.removeItem('joe_admin_logged');
+    updateAdminUI();
     document.getElementById('adminUser').value = '';
     document.getElementById('adminPass').value = '';
     document.getElementById('loginFormArea').style.display = 'block';
@@ -427,8 +435,8 @@ function saveNewGame() {
     if (!title) return alert('اكتب اسم اللعبة!');
 
     const games = getGames();
-    games.unshift({ id: Date.now(), title, cat, price, disc, icon: '🎮', tags: ['جديد'], url });
-    localStorage.setItem('joe_steam_full_games', JSON.stringify(games));
+    games.unshift({ id: Date.now(), title, cat, price, disc, icon: '🎮', tags: ['مضافة حديثاً'], url });
+    localStorage.setItem('joe_steam_empty_games', JSON.stringify(games));
     closeModal('addModal');
     renderStore();
     showToast('تمت إضافة اللعبة للمتجر بنجاح!');
@@ -437,7 +445,7 @@ function saveNewGame() {
 function delGame(id) {
     if (!isAdmin) return alert('غير مصرح لك بالحذف!');
     const games = getGames().filter(g => g.id !== id);
-    localStorage.setItem('joe_steam_full_games', JSON.stringify(games));
+    localStorage.setItem('joe_steam_empty_games', JSON.stringify(games));
     renderStore();
     renderLib();
     showToast('تم حذف اللعبة.');
@@ -454,8 +462,9 @@ function filterBy(cat) {
 function liveSearch() {
     const q = document.getElementById('searchInput').value.toLowerCase().trim();
     const box = document.getElementById('searchDropdown');
-    if (!q) { box.style.display = 'none'; return; }
-    const matches = getGames().filter(g => g.title.toLowerCase().includes(q));
+    const games = getGames();
+    if (!q || games.length === 0) { box.style.display = 'none'; return; }
+    const matches = games.filter(g => g.title.toLowerCase().includes(q));
     box.style.display = 'block';
     box.innerHTML = matches.length ? matches.map(g => `
         <div class="s-row" onclick="window.open('${g.url}', '_blank')">
@@ -472,14 +481,20 @@ function liveSearch() {
 }
 
 function addToLib(id) {
-    let lib = JSON.parse(localStorage.getItem('joe_steam_full_lib') || '[1]');
-    if (!lib.includes(id)) { lib.push(id); localStorage.setItem('joe_steam_full_lib', JSON.stringify(lib)); renderLib(); }
+    let lib = JSON.parse(localStorage.getItem('joe_steam_empty_lib') || '[]');
+    if (!lib.includes(id)) { lib.push(id); localStorage.setItem('joe_steam_empty_lib', JSON.stringify(lib)); renderLib(); }
 }
 
 function renderLib() {
-    const ids = JSON.parse(localStorage.getItem('joe_steam_full_lib') || '[1]');
-    const list = getGames().filter(g => ids.includes(g.id));
-    document.getElementById('libList').innerHTML = list.map(g => `
+    const ids = JSON.parse(localStorage.getItem('joe_steam_empty_lib') || '[]');
+    const games = getGames();
+    const list = games.filter(g => ids.includes(g.id));
+    const container = document.getElementById('libList');
+    if (list.length === 0) {
+        container.innerHTML = '<div style="padding:30px; text-align:center; color:var(--text-muted);">المكتبة فارغة حالياً. ابدأ بتحميل الألعاب من المتجر!</div>';
+        return;
+    }
+    container.innerHTML = list.map(g => `
         <div class="steam-row-card">
             <div class="game-left"><div class="game-thumb">${g.icon}</div><h3 style="color:#fff;">${g.title}</h3></div>
             <a href="${g.url}" target="_blank" class="btn-buy-steam">▶ تشغيل</a>
@@ -490,27 +505,27 @@ function renderLib() {
 function addFriend() {
     const n = document.getElementById('friendNameIn').value.trim();
     if (!n) return;
-    let f = JSON.parse(localStorage.getItem('joe_steam_full_friends') || '["يحيى (Nio Nio)"]');
-    f.push(n); localStorage.setItem('joe_steam_full_friends', JSON.stringify(f));
+    let f = JSON.parse(localStorage.getItem('joe_steam_empty_friends') || '[]');
+    f.push(n); localStorage.setItem('joe_steam_empty_friends', JSON.stringify(f));
     document.getElementById('friendNameIn').value = '';
     renderFriends();
 }
 
 function renderFriends() {
-    let f = JSON.parse(localStorage.getItem('joe_steam_full_friends') || '["يحيى (Nio Nio)"]');
-    document.getElementById('friendsContainer').innerHTML = f.map(name => `
+    let f = JSON.parse(localStorage.getItem('joe_steam_empty_friends') || '[]');
+    document.getElementById('friendsContainer').innerHTML = f.length ? f.map(name => `
         <div class="steam-row-card">
             <span style="color:#66c0f4; font-weight:bold;">👤 ${name}</span>
-            <span style="color:#a4d007; font-size:12px;">متصل - في Joe Games</span>
+            <span style="color:#a4d007; font-size:12px;">متصل</span>
         </div>
-    `).join('');
+    `).join('') : '<div style="padding:20px; text-align:center; color:var(--text-muted);">قائمة الأصدقاء فارغة. أضف أصدقاءك الآن!</div>';
 }
 
 function switchView(v) {
     document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.main-tabs span').forEach(el => el.classList.remove('active'));
     document.getElementById('view-' + v).classList.add('active');
-    if (document.getElementById('tab-' + v)) document.getElementById('tab-term').classList.add('active');
+    if (document.getElementById('tab-' + v)) document.getElementById('tab-' + v).classList.add('active');
 }
 
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -522,6 +537,8 @@ function openAddModal() {
 function setStatus(s) { showToast('تم تغيير حالتك إلى: ' + s); }
 function showToast(m) { alert(m); }
 
+// تهيئة
+updateAdminUI();
 renderStore();
 renderLib();
 renderFriends();
