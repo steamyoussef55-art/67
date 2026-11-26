@@ -1,547 +1,1797 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JOE GAMES - المنصة الرئيسية</title>
-<style>
-:root {
-    --bg-main: #1b2838;
-    --bg-top: #171a21;
-    --bg-panel: #16202d;
-    --bg-dropdown: #2a2e35;
-    --bg-hover: #3d4450;
-    --blue-accent: #1a9fff;
-    --blue-light: #66c0f4;
-    --green-btn: #5c7e10;
-    --green-text: #a4d007;
-    --text-main: #dcdedf;
-    --text-muted: #8f98a0;
-    --danger: #d9534f;
-}
-* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; user-select: none; }
-body { background: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-/* شاشة التحميل */
-#splash {
-    position: fixed; inset: 0; background: radial-gradient(circle, #1f2b3a 0%, #11161d 100%);
-    z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
-}
-.spinner-ring {
-    width: 90px; height: 90px; border-radius: 50%; border: 4px solid #2a475e;
-    border-top-color: var(--blue-accent); display: flex; align-items: center; justify-content: center;
-    font-size: 38px; animation: spin 1.2s linear infinite;
-}
-.spinner-inner { animation: spinRev 1.2s linear infinite; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes spinRev { 100% { transform: rotate(-360deg); } }
-
-/* الشريط العلوي */
-.title-bar {
-    background: var(--bg-top); height: 36px; display: flex; justify-content: space-between;
-    align-items: center; padding: 0 12px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid #0e1014;
-}
-.menus { display: flex; gap: 4px; position: relative; }
-.menu-item { padding: 5px 10px; cursor: pointer; border-radius: 3px; position: relative; }
-.menu-item:hover { background: var(--bg-hover); color: #fff; }
-.dropdown {
-    display: none; position: absolute; top: 100%; right: 0; background: var(--bg-dropdown);
-    min-width: 210px; box-shadow: 0 8px 20px rgba(0,0,0,0.7); border: 1px solid #444b57; z-index: 500; padding: 4px 0;
-}
-.menu-item:hover .dropdown { display: block; }
-.dropdown div { padding: 8px 14px; color: #dcdedf; font-size: 12px; cursor: pointer; }
-.dropdown div:hover { background: var(--blue-accent); color: #fff; }
-.dropdown hr { border: 0; border-top: 1px solid #3f4652; margin: 4px 0; }
-
-.top-right-tools { display: flex; align-items: center; gap: 8px; }
-.icon-box { padding: 4px 10px; border-radius: 2px; font-weight: bold; cursor: pointer; font-size: 12px; }
-.megaphone { background: #1e3b52; color: var(--blue-light); }
-.bell { background: #4c6b22; color: var(--a4d007); }
-.profile-pill {
-    background: #222933; padding: 4px 10px; border-radius: 2px; color: var(--blue-light);
-    display: flex; align-items: center; gap: 6px; cursor: pointer; border: 1px solid #2e3846;
-}
-
-/* التبويبات الرئيسية */
-.main-tabs {
-    background: var(--bg-top); padding: 6px 24px 12px; display: flex; gap: 22px;
-    font-size: 16px; font-weight: 800; letter-spacing: 0.5px;
-}
-.main-tabs span { color: var(--text-muted); cursor: pointer; padding-bottom: 4px; border-bottom: 3px solid transparent; }
-.main-tabs span.active, .main-tabs span:hover { color: var(--blue-accent); border-bottom-color: var(--blue-accent); }
-
-/* شريط البحث */
-.store-subbar {
-    background: linear-gradient(90deg, #3a6ea5 0%, #1b4f82 50%, #0f216e 100%);
-    padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; position: relative;
-}
-.sub-links { display: flex; gap: 18px; font-size: 13px; font-weight: bold; color: #fff; }
-.sub-links span { cursor: pointer; opacity: 0.9; }
-.sub-links span:hover { opacity: 1; text-decoration: underline; }
-
-.search-wrap { position: relative; width: 320px; }
-.search-wrap input {
-    width: 100%; background: #316282; border: 1px solid #16202d; color: #fff;
-    padding: 6px 12px; border-radius: 3px; font-size: 13px; outline: none;
-}
-.search-wrap input::placeholder { color: #9ac3de; font-style: italic; }
-.search-results {
-    display: none; position: absolute; top: 105%; left: 0; width: 420px; background: #2a2e35;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 400; border: 1px solid #454d59; padding: 10px;
-}
-.s-row {
-    display: flex; align-items: center; justify-content: space-between; padding: 8px;
-    border-bottom: 1px solid #383e47; cursor: pointer; gap: 10px;
-}
-.s-row:hover { background: #3d4450; }
-.discount-badge { background: #4c6b22; color: #a4d007; padding: 2px 6px; font-weight: bold; font-size: 12px; }
-
-/* منطقة المحتوى */
-.workspace { flex: 1; overflow-y: auto; padding: 20px 28px; }
-.view { display: none; }
-.view.active { display: block; }
-
-.section-hdr { font-size: 14px; color: #fff; margin: 16px 0 10px; letter-spacing: 0.5px; display: flex; justify-content: space-between; }
-.games-list { display: flex; flex-direction: column; gap: 10px; }
-.steam-row-card {
-    background: rgba(22, 32, 45, 0.9); border: 1px solid #2a475e; display: flex;
-    align-items: center; justify-content: space-between; padding: 10px 16px; border-radius: 3px; transition: 0.15s;
-}
-.steam-row-card:hover { background: #223449; border-color: var(--blue-light); }
-.game-left { display: flex; align-items: center; gap: 15px; }
-.game-thumb {
-    width: 120px; height: 56px; background: linear-gradient(135deg, #2a475e, #171a21);
-    display: flex; align-items: center; justify-content: center; font-size: 28px; border-radius: 2px;
-}
-.tag-pill { background: #293646; color: #8f98a0; font-size: 11px; padding: 2px 6px; border-radius: 2px; margin-left: 4px; }
-.btn-buy-steam {
-    background: var(--green-btn); color: #d2efa9; border: none; padding: 8px 16px;
-    font-weight: bold; font-size: 13px; border-radius: 2px; cursor: pointer; text-decoration: none;
-}
-.btn-buy-steam:hover { background: #75b022; color: #fff; }
-.btn-del-admin { background: var(--danger); color: #fff; border: none; padding: 8px 14px; font-size: 12px; border-radius: 2px; cursor: pointer; display: none; }
-
-.net-panel { background: #10151c; border: 1px solid #2a333f; padding: 18px; border-radius: 4px; margin-bottom: 18px; }
-.bars { display: flex; align-items: flex-end; gap: 4px; height: 70px; margin-top: 12px; }
-.bar { width: 10px; background: var(--blue-accent); border-radius: 2px 2px 0 0; }
-
-.bottom-bar {
-    background: var(--bg-top); height: 38px; border-top: 1px solid #2a303a; padding: 0 18px;
-    display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted);
-}
-.bottom-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 10px; border-radius: 3px; }
-.bottom-btn:hover { background: var(--bg-hover); color: #fff; }
-
-.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; z-index: 800; }
-.modal-win { background: #22262d; border: 1px solid #48505e; width: 460px; padding: 22px; border-radius: 4px; box-shadow: 0 15px 40px rgba(0,0,0,0.9); }
-.modal-win input, .modal-win select { width: 100%; background: #14171c; border: 1px solid #3b424e; color: #fff; padding: 9px; margin: 6px 0 14px; border-radius: 2px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GTA V 3D: لوس سانتوس الواقعية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Chakra+Petch:wght@700&family=Black+Ops+One&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050811;
+            font-family: 'Cairo', sans-serif;
+        }
+        #gameContainer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            cursor: crosshair;
+        }
+        .gta-font {
+            font-family: 'Black Ops One', 'Chakra Petch', 'Cairo', sans-serif;
+            text-shadow: 2px 2px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000;
+        }
+        .gta-num {
+            font-family: 'Chakra Petch', sans-serif;
+            text-shadow: 2px 2px 0px #000, -1px -1px 0px #000;
+        }
+        .star-active {
+            color: #ffffff;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95));
+            animation: gtaStarFlash 0.55s infinite alternate;
+        }
+        .star-inactive {
+            color: rgba(255, 255, 255, 0.22);
+            text-shadow: 1px 1px 0 #000;
+        }
+        @keyframes gtaStarFlash {
+            0% { color: #ffffff; transform: scale(1.05); filter: drop-shadow(0 0 8px #3b82f6); }
+            100% { color: #93c5fd; transform: scale(1.18); filter: drop-shadow(0 0 10px #ef4444); }
+        }
+        @keyframes missionSlam {
+            0% { transform: translate(-50%, -40px) scale(0.8); opacity: 0; }
+            12% { transform: translate(-50%, 0) scale(1.03); opacity: 1; }
+            18% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+            85% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; }
+        }
+        .mission-slam {
+            animation: missionSlam 4.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes wastedEffect {
+            0% { transform: scale(2.3); opacity: 0; letter-spacing: 0.4em; }
+            100% { transform: scale(1); opacity: 1; letter-spacing: 0.15em; }
+        }
+        .wasted-anim {
+            animation: wastedEffect 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes introTitlePulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 18px rgba(74, 222, 128, 0.45)); }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.55)); }
+        }
+        .intro-title-anim {
+            animation: introTitlePulse 3.2s ease-in-out infinite;
+        }
+        @keyframes policeAlertSlam {
+            0% { transform: translate(-50%, -60px) scale(0.85); opacity: 0; }
+            15% { transform: translate(-50%, 0) scale(1.04); opacity: 1; }
+            85% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -25px) scale(0.95); opacity: 0; }
+        }
+        .police-alert-anim {
+            animation: policeAlertSlam 4.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        #specialVignette {
+            box-shadow: inset 0 0 90px rgba(250, 204, 21, 0.55);
+            transition: opacity 0.3s ease;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+        ::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 9999px; }
+    </style>
 </head>
-<body>
+<body class="bg-gray-950 text-white">
 
-<div id="splash">
-    <div class="spinner-ring"><div class="spinner-inner">🎮</div></div>
-    <div style="background:#222933; padding:6px 16px; border-radius:3px; font-weight:bold; color:#fff;">
-        مرحباً بكم في JOE GAMES
+    <!-- 3D Three.js Canvas -->
+    <div id="gameContainer"></div>
+
+    <!-- Special Ability Screen Vignette -->
+    <div id="specialVignette" class="fixed inset-0 pointer-events-none opacity-0 z-10"></div>
+
+    <!-- Center Dynamic Crosshair -->
+    <div id="crosshair" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
+        <div class="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_4px_#000]"></div>
+        <div id="crosshairRing" class="absolute w-7 h-7 rounded-full border border-white/45 transition-transform duration-100"></div>
     </div>
-    <span style="font-size:12px; color:#8f98a0;">جاري تحميل المنصة...</span>
-</div>
 
-<div class="title-bar">
-    <div class="menus">
-        <div class="menu-item"><b>Joe Games</b>
-            <div class="dropdown">
-                <div id="loginMenuText" onclick="openModal('loginModal')">تسجيل دخول أو إنشاء حساب...</div>
-                <div onclick="showToast('تم تفعيل وضع عدم الاتصال')">العمل بدون إنترنت...</div>
-                <hr>
-                <div onclick="filterBy('all')">إعدادات المتجر</div>
-                <div onclick="location.reload()">إعادة تشغيل المنصة</div>
+    <!-- TOP-RIGHT: GTA V HUD -->
+    <div class="fixed top-4 right-4 z-20 flex flex-col items-end gap-1.5 pointer-events-none">
+        <div id="starsContainer" class="flex items-center gap-1 text-2xl sm:text-3xl px-2 py-0.5">
+            <span class="star-inactive" data-star="1">★</span>
+            <span class="star-inactive" data-star="2">★</span>
+            <span class="star-inactive" data-star="3">★</span>
+            <span class="star-inactive" data-star="4">★</span>
+            <span class="star-inactive" data-star="5">★</span>
+        </div>
+
+        <div id="cashDisplay" class="gta-num text-3xl sm:text-4xl font-bold text-[#4ade80] tracking-wider">
+            $00002500
+        </div>
+
+        <div class="flex items-center gap-2 bg-black/65 backdrop-blur-md px-3 py-1 rounded-xl border border-white/15 text-xs font-bold">
+            <span id="charBadgeName" class="text-amber-400 font-extrabold">مايكل (Michael)</span>
+            <span class="text-white/30">|</span>
+            <span id="gameClockText" class="gta-num text-sky-300 text-sm">14:30</span>
+        </div>
+
+        <!-- Health & Armor Bars -->
+        <div class="w-52 bg-black/70 backdrop-blur-md p-2.5 rounded-xl border border-white/15 space-y-1.5">
+            <div class="flex items-center justify-between text-[11px] font-bold">
+                <span class="text-emerald-400">الصحة ❤️</span>
+                <span id="hpText" class="gta-num">100</span>
             </div>
-        </div>
-        <div class="menu-item">عرض
-            <div class="dropdown">
-                <div onclick="switchView('library')">المكتبة (Library)</div>
-                <div onclick="switchView('downloads')">التنزيلات (Downloads)</div>
-                <div onclick="switchView('community')">الأصدقاء والدردشة</div>
-                <div onclick="switchView('store')">أخبار التحديثات</div>
+            <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                <div id="hpBar" class="h-full bg-emerald-400 transition-all duration-150" style="width: 100%;"></div>
             </div>
-        </div>
-        <div class="menu-item">الأصدقاء
-            <div class="dropdown">
-                <div onclick="switchView('community')">عرض قائمة الأصدقاء</div>
-                <div onclick="switchView('community')">إضافة صديق...</div>
-                <hr>
-                <div onclick="setStatus('متصل')">✔ متصل</div>
-                <div onclick="setStatus('بالخارج')">بالخارج</div>
-                <div onclick="setStatus('مخفي')">مخفي</div>
+            <div class="flex items-center justify-between text-[11px] font-bold">
+                <span class="text-sky-400">الدرع 🛡️</span>
+                <span id="armorText" class="gta-num">80</span>
             </div>
-        </div>
-        <div class="menu-item">الألعاب
-            <div class="dropdown">
-                <div onclick="switchView('library')">عرض مكتبة الألعاب</div>
-                <div id="addGameMenuText" style="opacity:0.5; cursor:not-allowed;">+ إضافة لعبة للمكتبة (للمدير فقط)</div>
-                <hr>
-                <div onclick="openModal('loginModal')">تسجيل الدخول بصلاحيات المدير</div>
-            </div>
-        </div>
-        <div class="menu-item" onclick="alert('JOE GAMES Platform Edition')">مساعدة</div>
-    </div>
-
-    <div class="top-right-tools">
-        <span class="icon-box megaphone" onclick="showToast('لا توجد إعلانات جديدة')">📢</span>
-        <span class="icon-box bell" onclick="showToast('أهلاً بك في منصتك')">🔔</span>
-        <div class="profile-pill" onclick="openModal('loginModal')">
-            <span id="userStatusDot" style="color:#75b022;">●</span>
-            <span id="topUserName">تسجيل دخول أو إنشاء حساب</span> ▾
-        </div>
-    </div>
-</div>
-
-<div class="main-tabs">
-    <span id="tab-store" class="active" onclick="switchView('store')">المتجر</span>
-    <span id="tab-library" onclick="switchView('library')">المكتبة</span>
-    <span id="tab-community" onclick="switchView('community')">المجتمع</span>
-    <span id="tab-downloads" onclick="switchView('downloads')">المدير</span>
-</div>
-
-<div class="store-subbar">
-    <div class="sub-links">
-        <span onclick="filterBy('all')">تصفح الكل</span>
-        <span onclick="filterBy('free')">مجانية للعب</span>
-        <span onclick="filterBy('paid')">ألعاب مدفوعة</span>
-        <span onclick="filterBy('mobile')">ألعاب موبايل</span>
-    </div>
-    <div class="search-wrap">
-        <input type="text" id="searchInput" placeholder="ابحث في المتجر..." onkeyup="liveSearch()" onfocus="liveSearch()">
-        <div class="search-results" id="searchDropdown"></div>
-    </div>
-</div>
-
-<div class="workspace" onclick="document.getElementById('searchDropdown').style.display='none'">
-
-    <div id="view-store" class="view active">
-        <div class="section-hdr">
-            <span>🔥 الألعاب المتاحة</span>
-            <span id="filterLabel" style="color:var(--blue-light);">عرض الكل</span>
-        </div>
-        <div class="games-list" id="storeList"></div>
-    </div>
-
-    <div id="view-library" class="view">
-        <div class="section-hdr"><span>📚 مكتبة الألعاب الخاصة</span></div>
-        <div class="games-list" id="libList"></div>
-    </div>
-
-    <div id="view-community" class="view">
-        <div class="section-hdr"><span>👥 قائمة الأصدقاء والدردشة</span></div>
-        <div style="display:flex; gap:10px; max-width:400px; margin-bottom:15px;">
-            <input type="text" id="friendNameIn" placeholder="اكتب اسم صديقك..." style="flex:1; background:#10151c; border:1px solid #2a475e; color:#fff; padding:8px;">
-            <button class="btn-buy-steam" onclick="addFriend()">+ إضافة صديق</button>
-        </div>
-        <div id="friendsContainer" class="games-list"></div>
-    </div>
-
-    <div id="view-downloads" class="view">
-        <div class="net-panel">
-            <div style="display:flex; justify-content:space-between; font-size:13px;">
-                <span>📶 الشبكة: <b style="color:var(--blue-light);">0.0 bps</b></span>
-                <span>⚡ الذروة: <b>0.0 bps</b></span>
-                <span>💾 القرص: <b style="color:#a4d007;">جاهز</b></span>
-            </div>
-            <div class="bars"><div class="bar" style="height:10%"></div></div>
-        </div>
-        <div class="section-hdr"><span>التنزيلات القادمة (0)</span></div>
-        <p style="color:var(--text-muted); font-size:13px;">لا توجد تنزيلات في قائمة الانتظار حالياً.</p>
-    </div>
-
-</div>
-
-<div class="bottom-bar">
-    <div class="bottom-btn" onclick="switchView('community')"><span>💬</span> الأصدقاء والدردشة</div>
-    <div class="bottom-btn" onclick="switchView('downloads')"><span>⬇️</span> إدارة التنزيلات</div>
-    <div class="bottom-btn" id="addGameFooterBtn" style="color:#8f98a0; cursor:not-allowed;" onclick="checkAddGame()">
-        <span style="background:#2a303a; padding:1px 6px; border-radius:2px;">+</span> إضافة لعبة (للمدير فقط)
-    </div>
-</div>
-
-<!-- نافذة تسجيل دخول المدير -->
-<div class="modal" id="loginModal">
-    <div class="modal-win">
-        <h3 id="modalTitle" style="color:#fff; margin-bottom:12px;">🔒 لوحة تحكم المدير</h3>
-        <p id="adminStatusMsg" style="font-size:12px; color:#8f98a0; margin-bottom:14px;">أدخل بيانات المدير للتحكم الكامل في الألعاب.</p>
-        
-        <div id="loginFormArea">
-            <label style="font-size:12px; color:#66c0f4;">اسم المستخدم:</label>
-            <input type="text" id="adminUser" placeholder="يوسف123">
-            
-            <label style="font-size:12px; color:#66c0f4;">كلمة المرور:</label>
-            <input type="password" id="adminPass" placeholder="•••••••••">
-
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="btn-buy-steam" style="flex:1; background:#5c7e10;" onclick="verifyAdmin()">تسجيل الدخول</button>
-                <button class="btn-buy-steam" style="background:#3d4450; color:#fff;" onclick="closeModal('loginModal')">إلغاء</button>
+            <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                <div id="armorBar" class="h-full bg-sky-400 transition-all duration-150" style="width: 80%;"></div>
             </div>
         </div>
 
-        <div id="adminPanelArea" style="display:none;">
-            <div style="background:#14171c; padding:12px; border-radius:3px; margin-bottom:15px; border-right:3px solid #a4d007;">
-                ✅ مرحباً بك يا مدير المنصة. لديك الآن صلاحيات كاملة لإضافة وحذف الألعاب.
+        <!-- Vehicle Speed & Integrity -->
+        <div id="carHealthBox" class="hidden flex-col gap-1 w-52 bg-black/70 backdrop-blur-md p-2.5 rounded-xl border border-white/15 shadow-xl">
+            <div class="flex items-center justify-between text-xs font-bold">
+                <span id="carNameLabel" class="text-amber-300 truncate max-w-[130px]">سيارة رياضية</span>
+                <span id="carSpeedText" class="gta-num text-emerald-400 text-sm">0 KM/H</span>
             </div>
-            <button class="btn-buy-steam" style="width:100%; margin-bottom:10px;" onclick="openAddModal()">➕ إضافة لعبة جديدة للمتجر</button>
-            <button class="btn-buy-steam" style="width:100%; background:#d9534f;" onclick="logoutAdmin()">تسجيل الخروج من الإدارة</button>
+            <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div id="carHealthBar" class="h-full bg-gradient-to-l from-amber-500 to-yellow-300 transition-all duration-150" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- Weapon Selector -->
+        <div class="flex items-center gap-1 bg-black/70 backdrop-blur-md p-1.5 rounded-xl border border-white/15 pointer-events-auto mt-1">
+            <button data-weapon="0" class="weapon-slot px-2 py-1 rounded-lg text-[11px] font-bold bg-white text-gray-950 transition cursor-pointer">[1] مسدس</button>
+            <button data-weapon="1" class="weapon-slot px-2 py-1 rounded-lg text-[11px] font-bold bg-white/10 text-gray-200 hover:bg-white/20 transition cursor-pointer">[2] رشاش</button>
+            <button data-weapon="2" class="weapon-slot px-2 py-1 rounded-lg text-[11px] font-bold bg-white/10 text-gray-200 hover:bg-white/20 transition cursor-pointer">[3] قناصة</button>
+            <button data-weapon="3" class="weapon-slot px-2 py-1 rounded-lg text-[11px] font-bold bg-white/10 text-gray-200 hover:bg-white/20 transition cursor-pointer">[4] RPG</button>
+        </div>
+        <div id="ammoDisplay" class="gta-num text-xs sm:text-sm font-bold text-gray-100 bg-black/60 px-3 py-0.5 rounded-lg border border-white/10">
+            الذخيرة: ∞ | صواريخ RPG: 10
         </div>
     </div>
-</div>
 
-<!-- نافذة إضافة لعبة -->
-<div class="modal" id="addModal">
-    <div class="modal-win">
-        <h3 style="color:#fff; margin-bottom:12px;">➕ إضافة لعبة جديدة</h3>
-        <label style="font-size:12px; color:#8f98a0;">اسم اللعبة:</label>
-        <input type="text" id="gTitle" placeholder="مثال: Minecraft">
-        
-        <label style="font-size:12px; color:#8f98a0;">التصنيف:</label>
-        <select id="gCat">
-            <option value="free">مجانية للعب</option>
-            <option value="paid">لعبة مدفوعة</option>
-            <option value="mobile">ألعاب موبايل</option>
-        </select>
+    <!-- TOP-LEFT: CONTROLS & STATUS -->
+    <div class="fixed top-4 left-4 z-20 flex flex-col gap-2">
+        <div class="flex flex-wrap items-center gap-1.5">
+            <button id="openPhoneBtn" class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-gray-950 px-3.5 py-2 rounded-xl font-black text-xs sm:text-sm shadow-lg shadow-emerald-500/25 transition flex items-center gap-1.5 cursor-pointer">
+                <span>📱</span>
+                <span>هاتف iFruit [M]</span>
+            </button>
+            <button id="openCharWheelBtn" class="bg-black/75 hover:bg-black/95 text-amber-400 px-3 py-2 rounded-xl border border-amber-400/35 text-xs sm:text-sm font-extrabold shadow-lg transition flex items-center gap-1 cursor-pointer">
+                <span>👥</span>
+                <span>الشخصيات [Tab]</span>
+            </button>
+            <button id="timeCycleBtn" class="bg-black/75 hover:bg-black/95 text-sky-300 px-3 py-2 rounded-xl border border-white/20 text-xs sm:text-sm font-bold shadow-lg transition cursor-pointer">
+                ☀️ الوقت: نهار
+            </button>
+            <button id="radioToggleBtn" class="bg-black/75 hover:bg-black/95 text-purple-300 px-3 py-2 rounded-xl border border-white/20 text-xs sm:text-sm font-bold shadow-lg transition cursor-pointer">
+                📻 راديو LS: متوقف
+            </button>
+            <button id="soundToggleBtn" class="bg-black/75 hover:bg-black/95 text-white px-2.5 py-2 rounded-xl border border-white/20 text-xs sm:text-sm font-bold shadow-lg transition cursor-pointer">
+                <span id="soundIcon">🔊</span>
+            </button>
+            <button id="helpToggleBtn" class="bg-black/75 hover:bg-black/95 text-gray-200 px-2.5 py-2 rounded-xl border border-white/20 text-xs sm:text-sm font-bold shadow-lg transition cursor-pointer">
+                ⌨️
+            </button>
+        </div>
 
-        <label style="font-size:12px; color:#8f98a0;">السعر:</label>
-        <input type="text" id="gPrice" placeholder="مجاني">
+        <div class="flex flex-wrap items-center gap-2">
+            <div class="inline-flex items-center gap-2 bg-black/65 backdrop-blur-sm px-3 py-1 rounded-xl border border-white/10 text-xs font-bold text-gray-200">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span id="districtName" class="text-white font-extrabold">وسط المدينة - برج Maze Bank</span>
+            </div>
+            <button id="specialAbilityBtn" class="bg-yellow-500/20 hover:bg-yellow-500/35 text-yellow-300 border border-yellow-400/40 px-2.5 py-1 rounded-xl text-xs font-extrabold transition cursor-pointer">
+                ⚡ قدرة خاصة [Q] (<span id="specialPct">100</span>%)
+            </button>
+        </div>
 
-        <label style="font-size:12px; color:#8f98a0;">الخصم (اختياري):</label>
-        <input type="text" id="gDisc" placeholder="-50%">
-
-        <label style="font-size:12px; color:#8f98a0;">رابط التحميل أو الشراء:</label>
-        <input type="url" id="gUrl" placeholder="https://...">
-
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="btn-buy-steam" style="flex:1;" onclick="saveNewGame()">نشر اللعبة</button>
-            <button class="btn-buy-steam" style="background:#3d4450; color:#fff;" onclick="closeModal('addModal')">إلغاء</button>
+        <div id="controlsCard" class="hidden bg-gray-950/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 text-xs text-gray-200 max-w-xs shadow-2xl space-y-1.5">
+            <div class="font-black text-emerald-400 text-sm border-b border-white/10 pb-1">أزرار التحكم الواقعية</div>
+            <div class="flex justify-between"><span>المشي / القيادة:</span><span class="font-bold text-white">WASD أو الأسهم</span></div>
+            <div class="flex justify-between"><span>ركض سريع / نيترو:</span><span class="font-bold text-amber-300">Shift</span></div>
+            <div class="flex justify-between"><span>سرقة ونزول سيارة:</span><span class="font-bold text-emerald-300">E</span></div>
+            <div class="flex justify-between"><span>تبديل الشخصيات (3):</span><span class="font-bold text-sky-300">Tab</span></div>
+            <div class="flex justify-between"><span>تفعيل القدرة الخاصة:</span><span class="font-bold text-yellow-300">Q</span></div>
+            <div class="flex justify-between"><span>هاتف المهمات:</span><span class="font-bold text-emerald-400">M</span></div>
+            <div class="flex justify-between"><span>إطلاق النار:</span><span class="font-bold text-rose-400">كليك يسار / F</span></div>
+            <div class="flex justify-between"><span>تغيير زاوية الكاميرا:</span><span class="font-bold text-purple-300">V</span></div>
         </div>
     </div>
-</div>
 
-<script>
-setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1000);
+    <!-- TOP-CENTER: ACTIVE MISSION HUD -->
+    <div id="activeMissionHud" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-20 bg-gray-950/90 backdrop-blur-md border-2 border-emerald-500/70 px-5 py-2.5 rounded-2xl shadow-2xl text-center max-w-md w-[90%] sm:w-auto pointer-events-none">
+        <div class="flex items-center justify-center gap-2 text-xs font-extrabold text-emerald-400">
+            <span>🎯 مهمة نشطة:</span>
+            <span id="hudMissionTitle">سرقة بنك باسيفيك</span>
+            <span id="hudMissionTimer" class="hidden bg-rose-600 text-white px-2 py-0.5 rounded-md gta-num">01:15</span>
+        </div>
+        <div id="hudMissionDesc" class="text-sm sm:text-base font-bold text-white mt-0.5">
+            توجّه إلى العلامة الصفراء
+        </div>
+        <div class="flex items-center justify-center gap-4 mt-1 text-xs font-bold text-gray-300">
+            <span id="hudMissionDistance" class="text-amber-300">المسافة: 0 متر</span>
+            <span id="hudMissionProgress" class="text-emerald-400">التقدم: 0 / 3</span>
+        </div>
+    </div>
 
-let isAdmin = localStorage.getItem('joe_admin_logged') === 'true';
+    <!-- Mission Banner -->
+    <div id="missionBanner" class="hidden fixed top-28 left-1/2 -translate-x-1/2 z-30 bg-black/90 border-y-4 border-amber-400 px-10 py-4 shadow-2xl text-center pointer-events-none min-w-[300px]">
+        <div id="bannerSub" class="text-xs font-extrabold text-amber-300 tracking-widest uppercase">تم إنجاز المهمة</div>
+        <div id="bannerTitle" class="gta-font text-3xl sm:text-5xl text-amber-400 mt-0.5">MISSION PASSED</div>
+        <div id="bannerReward" class="gta-num text-xl font-bold text-emerald-400 mt-1">+$5,000</div>
+    </div>
 
-function getGames() {
-    const s = localStorage.getItem('joe_steam_empty_games');
-    if (!s) { localStorage.setItem('joe_steam_empty_games', JSON.stringify([])); return []; }
-    return JSON.parse(s);
-}
+    <!-- Mid-Game Police Alert Banner -->
+    <div id="policeAlertBanner" class="hidden fixed top-24 left-1/2 -translate-x-1/2 z-30 bg-slate-950/95 border-y-4 border-red-500 px-8 py-3.5 rounded-2xl shadow-2xl text-center pointer-events-none min-w-[320px]">
+        <div class="flex items-center justify-center gap-2 text-xs font-black text-red-400 tracking-wider">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+            <span>إنذار منتصف اللعبة • MID-GAME ESCALATION</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></span>
+        </div>
+        <div id="policeAlertTitle" class="gta-font text-2xl sm:text-4xl text-white mt-0.5">POLICE ALERT • استنفار الشرطة</div>
+        <div id="policeAlertSub" class="text-xs sm:text-sm font-bold text-amber-300 mt-1">
+            دوريات LSPD بدأت الانتشار والمطاردة في شوارع لوس سانتوس!
+        </div>
+    </div>
 
-let currentFilter = 'all';
+    <!-- Action Prompt -->
+    <div id="actionPrompt" class="hidden fixed bottom-10 left-1/2 -translate-x-1/2 z-20 bg-black/85 text-white border border-white/25 px-5 py-2 rounded-xl font-extrabold text-sm shadow-2xl pointer-events-none">
+        اضغط <span class="text-emerald-400">[E]</span> لقيادة المركبة 🚗
+    </div>
 
-function renderStore() {
-    const list = getGames().filter(g => currentFilter === 'all' || g.cat === currentFilter);
-    const container = document.getElementById('storeList');
-    if (list.length === 0) {
-        container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted);">لا توجد ألعاب حالياً. اضغط على "+ إضافة لعبة" لإضافة أول لعبة للمتجر!</div>';
-        return;
-    }
-    container.innerHTML = list.map(g => `
-        <div class="steam-row-card">
-            <div class="game-left">
-                <div class="game-thumb">${g.icon}</div>
+    <!-- CHARACTER SWITCHER MODAL -->
+    <div id="charModal" class="hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-gray-950 border-2 border-amber-400/40 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
                 <div>
-                    <h3 style="color:#fff; font-size:15px; margin-bottom:5px;">${g.title}</h3>
-                    <div>${(g.tags || ['لعبة']).map(t => `<span class="tag-pill">${t}</span>`).join('')}</div>
+                    <h2 class="text-xl sm:text-2xl font-black text-amber-400">تبديل الشخصيات الثلاث</h2>
+                    <p class="text-xs text-gray-400">كل شخصية تمتلك قدرة خاصة وأسلوباً مختلفاً</p>
+                </div>
+                <button id="closeCharBtn" class="bg-white/10 hover:bg-rose-600 text-white w-9 h-9 rounded-xl font-bold transition cursor-pointer">✕</button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div data-char="0" class="char-card p-4 rounded-2xl border-2 border-sky-400 bg-sky-950/30 hover:bg-sky-900/40 transition cursor-pointer flex flex-col justify-between gap-3">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-black text-lg text-sky-300">مايكل (Michael)</span>
+                            <span class="text-2xl">🕶️</span>
+                        </div>
+                        <p class="text-xs text-gray-300 mt-1">خبير السرقات والتكتيك ودقة التصويب العالية.</p>
+                        <div class="mt-2.5 text-[11px] font-bold text-sky-200 bg-sky-500/20 px-2.5 py-1 rounded-lg">
+                            ⚡ القدرة: تباطؤ الزمن التكتيكي
+                        </div>
+                    </div>
+                    <button class="w-full py-2 rounded-xl bg-sky-500 text-gray-950 font-black text-xs">اختيار مايكل</button>
+                </div>
+
+                <div data-char="1" class="char-card p-4 rounded-2xl border-2 border-emerald-400 bg-emerald-950/30 hover:bg-emerald-900/40 transition cursor-pointer flex flex-col justify-between gap-3">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-black text-lg text-emerald-300">فرانكلين (Franklin)</span>
+                            <span class="text-2xl">🏎️</span>
+                        </div>
+                        <p class="text-xs text-gray-300 mt-1">سائق محترف يتميز بسرعة حركة وتيربو قيادة خارق.</p>
+                        <div class="mt-2.5 text-[11px] font-bold text-emerald-200 bg-emerald-500/20 px-2.5 py-1 rounded-lg">
+                            ⚡ القدرة: تيربو القيادة الخارق
+                        </div>
+                    </div>
+                    <button class="w-full py-2 rounded-xl bg-emerald-500 text-gray-950 font-black text-xs">اختيار فرانكلين</button>
+                </div>
+
+                <div data-char="2" class="char-card p-4 rounded-2xl border-2 border-orange-400 bg-orange-950/30 hover:bg-orange-900/40 transition cursor-pointer flex flex-col justify-between gap-3">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-black text-lg text-orange-300">تريفور (Trevor)</span>
+                            <span class="text-2xl">🔥</span>
+                        </div>
+                        <p class="text-xs text-gray-300 mt-1">قوة هجومية مضاعفة وتحمل عالٍ للضرر.</p>
+                        <div class="mt-2.5 text-[11px] font-bold text-orange-200 bg-orange-500/20 px-2.5 py-1 rounded-lg">
+                            ⚡ القدرة: غضب تريفور (درع لا يُقهر)
+                        </div>
+                    </div>
+                    <button class="w-full py-2 rounded-xl bg-orange-500 text-gray-950 font-black text-xs">اختيار تريفور</button>
                 </div>
             </div>
-            <div style="display:flex; align-items:center; gap:12px;">
-                ${g.disc ? `<span class="discount-badge">${g.disc}</span>` : ''}
-                <span style="color:#fff; font-weight:bold; font-size:14px;">${g.price}</span>
-                <a href="${g.url}" target="_blank" onclick="addToLib(${g.id})" class="btn-buy-steam">تحميل / فتح</a>
-                <button class="btn-del-admin" style="display: ${isAdmin ? 'block' : 'none'};" onclick="delGame(${g.id})">حذف</button>
-            </div>
         </div>
-    `).join('');
-}
+    </div>
 
-function updateAdminUI() {
-    const headerName = document.getElementById('topUserName');
-    
-    if (isAdmin) {
-        headerName.innerText = 'لوحة التحكم (مدير)';
-        document.getElementById('loginMenuText').innerText = 'لوحة تحكم المدير';
-        document.getElementById('addGameMenuText').style.opacity = '1';
-        document.getElementById('addGameMenuText').style.cursor = 'pointer';
-        document.getElementById('addGameMenuText').setAttribute('onclick', 'openAddModal()');
-        
-        document.getElementById('addGameFooterBtn').style.color = '#fff';
-        document.getElementById('addGameFooterBtn').style.cursor = 'pointer';
-        document.getElementById('addGameFooterBtn').setAttribute('onclick', 'openAddModal()');
-    } else {
-        headerName.innerText = 'تسجيل دخول أو إنشاء حساب';
-        document.getElementById('loginMenuText').innerText = 'تسجيل دخول أو إنشاء حساب...';
-        document.getElementById('addGameMenuText').style.opacity = '0.5';
-        document.getElementById('addGameMenuText').style.cursor = 'not-allowed';
-        document.getElementById('addGameMenuText').removeAttribute('onclick');
-
-        document.getElementById('addGameFooterBtn').style.color = '#8f98a0';
-        document.getElementById('addGameFooterBtn').style.cursor = 'not-allowed';
-        document.getElementById('addGameFooterBtn').removeAttribute('onclick');
-    }
-}
-
-function verifyAdmin() {
-    const u = document.getElementById('adminUser').value.trim();
-    const p = document.getElementById('adminPass').value.trim();
-    if (u === 'يوسف123' && p === '123456789') {
-        isAdmin = true;
-        localStorage.setItem('joe_admin_logged', 'true');
-        updateAdminUI();
-        document.getElementById('loginFormArea').style.display = 'none';
-        document.getElementById('adminPanelArea').style.display = 'block';
-        document.getElementById('modalTitle').innerText = '👨‍💻 مرحباً بك يا مدير';
-        renderStore();
-        showToast('تم تسجيل دخول المدير بنجاح!');
-    } else {
-        alert('بيانات الدخول غير صحيحة!');
-    }
-}
-
-function logoutAdmin() {
-    isAdmin = false;
-    localStorage.removeItem('joe_admin_logged');
-    updateAdminUI();
-    document.getElementById('adminUser').value = '';
-    document.getElementById('adminPass').value = '';
-    document.getElementById('loginFormArea').style.display = 'block';
-    document.getElementById('adminPanelArea').style.display = 'none';
-    document.getElementById('modalTitle').innerText = '🔒 لوحة تحكم المدير';
-    renderStore();
-    closeModal('loginModal');
-    showToast('تم تسجيل الخروج.');
-}
-
-function checkAddGame() {
-    if (!isAdmin) {
-        openModal('loginModal');
-    }
-}
-
-function saveNewGame() {
-    if (!isAdmin) return alert('غير مصرح لك بالإضافة!');
-    const title = document.getElementById('gTitle').value.trim();
-    const cat = document.getElementById('gCat').value;
-    const price = document.getElementById('gPrice').value.trim() || 'مجاني';
-    const disc = document.getElementById('gDisc').value.trim();
-    const url = document.getElementById('gUrl').value.trim() || '#';
-    if (!title) return alert('اكتب اسم اللعبة!');
-
-    const games = getGames();
-    games.unshift({ id: Date.now(), title, cat, price, disc, icon: '🎮', tags: ['مضافة حديثاً'], url });
-    localStorage.setItem('joe_steam_empty_games', JSON.stringify(games));
-    closeModal('addModal');
-    renderStore();
-    showToast('تمت إضافة اللعبة للمتجر بنجاح!');
-}
-
-function delGame(id) {
-    if (!isAdmin) return alert('غير مصرح لك بالحذف!');
-    const games = getGames().filter(g => g.id !== id);
-    localStorage.setItem('joe_steam_empty_games', JSON.stringify(games));
-    renderStore();
-    renderLib();
-    showToast('تم حذف اللعبة.');
-}
-
-function filterBy(cat) {
-    currentFilter = cat;
-    switchView('store');
-    const names = { all: 'عرض الكل', free: 'مجانية للعب', paid: 'ألعاب مدفوعة', mobile: 'ألعاب موبايل' };
-    document.getElementById('filterLabel').innerText = names[cat];
-    renderStore();
-}
-
-function liveSearch() {
-    const q = document.getElementById('searchInput').value.toLowerCase().trim();
-    const box = document.getElementById('searchDropdown');
-    const games = getGames();
-    if (!q || games.length === 0) { box.style.display = 'none'; return; }
-    const matches = games.filter(g => g.title.toLowerCase().includes(q));
-    box.style.display = 'block';
-    box.innerHTML = matches.length ? matches.map(g => `
-        <div class="s-row" onclick="window.open('${g.url}', '_blank')">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-size:22px;">${g.icon}</span>
-                <div>
-                    <div style="color:#fff; font-weight:bold; font-size:13px;">${g.title}</div>
-                    <div style="color:#a4d007; font-size:12px;">${g.price}</div>
+    <!-- iFRUIT MISSIONS MODAL -->
+    <div id="phoneModal" class="hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-gray-950 border-4 border-gray-800 rounded-[2.2rem] max-w-2xl w-full p-5 sm:p-6 shadow-2xl flex flex-col max-h-[88vh] relative">
+            <div class="w-20 h-1.5 bg-gray-700 rounded-full mx-auto mb-3"></div>
+            <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">📱</span>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-emerald-400">تطبيق مهمات لوس سانتوس (iFruit)</h2>
+                        <p class="text-xs text-gray-400">اختر مهمة لبدء الهدف فوراً وكسب الأموال</p>
+                    </div>
                 </div>
+                <button id="closePhoneBtn" class="bg-white/10 hover:bg-rose-600 text-white w-9 h-9 rounded-xl font-bold transition cursor-pointer">✕</button>
             </div>
-            ${g.disc ? `<span class="discount-badge">${g.disc}</span>` : ''}
+            <div id="missionListContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pr-1"></div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-gray-400">
+                <span>المهمات المنجزة: <b id="completedCountText" class="text-emerald-400">0 / 4</b></span>
+                <button id="cancelMissionBtn" class="hidden bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-1.5 rounded-xl font-bold cursor-pointer">إلغاء المهمة الحالية</button>
+            </div>
         </div>
-    `).join('') : '<div style="padding:8px; font-size:12px; color:#8f98a0;">لا توجد نتائج مطابقة</div>';
-}
+    </div>
 
-function addToLib(id) {
-    let lib = JSON.parse(localStorage.getItem('joe_steam_empty_lib') || '[]');
-    if (!lib.includes(id)) { lib.push(id); localStorage.setItem('joe_steam_empty_lib', JSON.stringify(lib)); renderLib(); }
-}
-
-function renderLib() {
-    const ids = JSON.parse(localStorage.getItem('joe_steam_empty_lib') || '[]');
-    const games = getGames();
-    const list = games.filter(g => ids.includes(g.id));
-    const container = document.getElementById('libList');
-    if (list.length === 0) {
-        container.innerHTML = '<div style="padding:30px; text-align:center; color:var(--text-muted);">المكتبة فارغة حالياً. ابدأ بتحميل الألعاب من المتجر!</div>';
-        return;
-    }
-    container.innerHTML = list.map(g => `
-        <div class="steam-row-card">
-            <div class="game-left"><div class="game-thumb">${g.icon}</div><h3 style="color:#fff;">${g.title}</h3></div>
-            <a href="${g.url}" target="_blank" class="btn-buy-steam">▶ تشغيل</a>
+    <!-- SINGLE START / INTRO OVERLAY -->
+    <div id="startOverlay" class="fixed inset-0 z-50 bg-gradient-to-t from-black/90 via-black/45 to-black/70 flex flex-col justify-between p-5 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 bg-black/70 backdrop-blur-md border border-white/15 px-4 py-2 rounded-2xl">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="introSceneLabel" class="text-xs sm:text-sm font-extrabold text-emerald-300">
+                    مشهد الانترو: برج Maze Bank ووسط لوس سانتوس
+                </span>
+            </div>
+            <button id="skipIntroBtn" class="bg-white/15 hover:bg-white/25 backdrop-blur-md text-white border border-white/25 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer">
+                تخطي الانترو ⏭ [Space / Enter]
+            </button>
         </div>
-    `).join('');
-}
 
-function addFriend() {
-    const n = document.getElementById('friendNameIn').value.trim();
-    if (!n) return;
-    let f = JSON.parse(localStorage.getItem('joe_steam_empty_friends') || '[]');
-    f.push(n); localStorage.setItem('joe_steam_empty_friends', JSON.stringify(f));
-    document.getElementById('friendNameIn').value = '';
-    renderFriends();
-}
+        <div class="my-auto max-w-2xl mx-auto w-full bg-gray-950/80 backdrop-blur-md border border-emerald-400/35 rounded-3xl p-6 sm:p-8 text-center shadow-2xl space-y-5">
+            <div class="space-y-2">
+                <span class="inline-block bg-emerald-500/20 text-emerald-300 border border-emerald-400/35 px-4 py-1 rounded-full text-xs font-extrabold">
+                    عالم مفتوح ثلاثي الأبعاد • Los Santos 3D
+                </span>
+                <h1 class="gta-font intro-title-anim text-4xl sm:text-6xl text-white tracking-wider">
+                    GRAND THEFT AUTO <span class="text-emerald-400">V</span>
+                </h1>
+                <p class="text-gray-200 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+                    استكشف لوس سانتوس: ناطحات السحاب وبرج <b>Maze Bank</b>، الشاطئ والمحيط، تلال <b>VINEWOOD</b>، وبدّل بين الشخصيات الثلاث أو ابدأ مهمة جديدة.
+                </p>
+            </div>
 
-function renderFriends() {
-    let f = JSON.parse(localStorage.getItem('joe_steam_empty_friends') || '[]');
-    document.getElementById('friendsContainer').innerHTML = f.length ? f.map(name => `
-        <div class="steam-row-card">
-            <span style="color:#66c0f4; font-weight:bold;">👤 ${name}</span>
-            <span style="color:#a4d007; font-size:12px;">متصل</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-right bg-black/65 p-4 rounded-2xl border border-white/10 text-xs">
+                <div>🏃‍♂️ <b>WASD / Arrows:</b> حركة وقيادة</div>
+                <div>⚡ <b>Shift / Q:</b> تيربو وقدرة خاصة</div>
+                <div>🚗 <b>E:</b> سرقة ونزول السيارات</div>
+                <div>📱 <b>M:</b> هاتف المهمات</div>
+                <div>👥 <b>Tab:</b> مايكل / فرانكلين / تريفور</div>
+                <div>🔫 <b>Click / F / 1-4:</b> تصويب وأسلحة</div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
+                <span class="text-gray-300 font-bold">جودة الجرافيك:</span>
+                <button data-qual="ultra" class="qual-btn px-3.5 py-1.5 rounded-xl bg-emerald-500 text-gray-950 font-black cursor-pointer">Ultra</button>
+                <button data-qual="high" class="qual-btn px-3.5 py-1.5 rounded-xl bg-white/10 text-gray-200 font-bold cursor-pointer">High</button>
+                <button data-qual="balanced" class="qual-btn px-3.5 py-1.5 rounded-xl bg-white/10 text-gray-200 font-bold cursor-pointer">Balanced</button>
+            </div>
+
+            <button id="startGameBtn" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-500 hover:from-emerald-400 hover:to-green-300 text-gray-950 font-black text-xl rounded-2xl shadow-xl shadow-emerald-500/30 transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+                دخول لوس سانتوس • START GAME ▶
+            </button>
         </div>
-    `).join('') : '<div style="padding:20px; text-align:center; color:var(--text-muted);">قائمة الأصدقاء فارغة. أضف أصدقاءك الآن!</div>';
-}
 
-function switchView(v) {
-    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.main-tabs span').forEach(el => el.classList.remove('active'));
-    document.getElementById('view-' + v).classList.add('active');
-    if (document.getElementById('tab-' + v)) document.getElementById('tab-' + v).classList.add('active');
-}
+        <div class="flex items-center justify-between text-xs text-gray-300 bg-black/65 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/10">
+            <span>🎬 الكاميرا السينمائية نشطة في الخلفية</span>
+            <span class="text-amber-300 font-bold">🚨 استنفار الشرطة يبدأ تلقائياً في منتصف اللعب</span>
+        </div>
+    </div>
 
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-function openAddModal() {
-    closeModal('loginModal');
-    openModal('addModal');
-}
-function setStatus(s) { showToast('تم تغيير حالتك إلى: ' + s); }
-function showToast(m) { alert(m); }
+    <!-- WASTED OVERLAY -->
+    <div id="wastedOverlay" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center">
+        <div class="wasted-anim space-y-4">
+            <h2 class="gta-font text-6xl sm:text-8xl text-rose-600 uppercase">WASTED</h2>
+            <p class="text-xl sm:text-2xl font-extrabold text-white">تم القضاء عليك في لوس سانتوس!</p>
+            <div class="bg-gray-900/90 border border-white/15 px-6 py-4 rounded-2xl inline-block space-y-1">
+                <div class="text-gray-400 text-xs">رسوم المستشفى: -$500</div>
+                <div id="finalCashText" class="gta-num text-3xl text-emerald-400 font-bold">$2,000</div>
+            </div>
+            <div class="pt-3">
+                <button id="respawnBtn" class="px-8 py-3.5 bg-white hover:bg-emerald-400 text-gray-950 font-black text-lg rounded-2xl shadow-xl transition transform hover:scale-105 cursor-pointer">
+                    الخروج من المستشفى ومتابعة اللعب 🏥
+                </button>
+            </div>
+        </div>
+    </div>
 
-// تهيئة
-updateAdminUI();
-renderStore();
-renderLib();
-renderFriends();
-</script>
+    <script>
+        // ==========================================
+        // 1. WORLD CONSTANTS & STATE
+        // ==========================================
+        const MAP_HALF = 900;
+        const BLOCK_STEP = 150;
+        const ROAD_W = 38;
+
+        let graphicsQuality = 'ultra';
+        let introActive = true;
+        let introTime = 0;
+        let gameplayElapsed = 0;
+        let midGameEscalationTriggered = false;
+        let gameStarted = false;
+        let isPaused = false;
+        let cameraMode = 0;
+        let timePreset = 0;
+        let gameMinutes = 14 * 60 + 30;
+
+        let camYaw = 0;
+        let camPitch = 0.28;
+        let isDraggingCamera = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        let screenShake = 0;
+
+        const keys = {};
+        let mouseDownLeft = false;
+
+        const CHARACTERS = [
+            {
+                id: 0,
+                name: 'مايكل (Michael)',
+                shirt: 0x1e293b,
+                pants: 0x0f172a,
+                skin: 0xfed7aa,
+                hair: 0x334155,
+                speedMult: 1.0,
+                dmgMult: 1.25,
+                armorBonus: 80
+            },
+            {
+                id: 1,
+                name: 'فرانكلين (Franklin)',
+                shirt: 0x15803d,
+                pants: 0x1e3a8a,
+                skin: 0x8d5524,
+                hair: 0x090d16,
+                speedMult: 1.18,
+                dmgMult: 1.0,
+                armorBonus: 60
+            },
+            {
+                id: 2,
+                name: 'تريفور (Trevor)',
+                shirt: 0xd97706,
+                pants: 0x3f3f46,
+                skin: 0xfdba74,
+                hair: 0x451a03,
+                speedMult: 1.05,
+                dmgMult: 1.5,
+                armorBonus: 100
+            }
+        ];
+
+        const WEAPONS = [
+            { name: 'مسدس', cooldown: 0.22, dmg: 26, speed: 95, spread: 0.015, explosive: false },
+            { name: 'رشاش', cooldown: 0.09, dmg: 18, speed: 110, spread: 0.04, explosive: false },
+            { name: 'قناصة', cooldown: 0.75, dmg: 95, speed: 150, spread: 0.002, explosive: false },
+            { name: 'RPG', cooldown: 0.9, dmg: 140, speed: 65, spread: 0.01, explosive: true }
+        ];
+
+        const player = {
+            charId: 0,
+            x: 0,
+            y: 0,
+            z: 45,
+            vy: 0,
+            yaw: 0,
+            hp: 100,
+            maxHp: 100,
+            armor: 80,
+            maxArmor: 100,
+            special: 100,
+            specialActive: false,
+            specialTimer: 0,
+            cash: 2500,
+            wanted: 0,
+            wantedHeat: 0,
+            weapon: 0,
+            rockets: 10,
+            shootCooldown: 0,
+            invuln: 0,
+            inCar: null,
+            onGround: true,
+            walkCycle: 0,
+            mesh: null,
+            limbs: {}
+        };
+
+        // ==========================================
+        // 2. AUDIO ENGINE (SYNTH + RADIO)
+        // ==========================================
+        let audioCtx = null;
+        let soundEnabled = true;
+        let radioEnabled = false;
+        let radioTimer = null;
+        let radioStep = 0;
+
+        function ensureAudio() {
+            if (!soundEnabled) return null;
+            if (!audioCtx) {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                if (AC) audioCtx = new AC();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+            return audioCtx;
+        }
+
+        function playShotSound(weaponIdx) {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = weaponIdx === 3 ? 'sawtooth' : 'square';
+            const startFreq = weaponIdx === 3 ? 130 : weaponIdx === 2 ? 320 : weaponIdx === 1 ? 240 : 280;
+            osc.frequency.setValueAtTime(startFreq, now);
+            osc.frequency.exponentialRampToValueAtTime(42, now + (weaponIdx === 2 ? 0.22 : 0.11));
+            gain.gain.setValueAtTime(0.14, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + (weaponIdx === 2 ? 0.22 : 0.11));
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.24);
+        }
+
+        function playExplosionSound() {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(95, now);
+            osc.frequency.exponentialRampToValueAtTime(24, now + 0.45);
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.46);
+        }
+
+        function playAlertSound() {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            [0, 0.22].forEach((offset, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(idx === 0 ? 680 : 880, now + offset);
+                gain.gain.setValueAtTime(0.12, now + offset);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.18);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + offset);
+                osc.stop(now + offset + 0.19);
+            });
+        }
+
+        function toggleRadio() {
+            radioEnabled = !radioEnabled;
+            const btn = document.getElementById('radioToggleBtn');
+            btn.textContent = radioEnabled ? '📻 راديو LS: يعمل' : '📻 راديو LS: متوقف';
+            if (radioTimer) {
+                clearInterval(radioTimer);
+                radioTimer = null;
+            }
+            if (radioEnabled) {
+                ensureAudio();
+                const notes = [110, 130.81, 146.83, 164.81, 196.0, 146.83];
+                radioTimer = setInterval(() => {
+                    if (!soundEnabled || !audioCtx || isPaused) return;
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(notes[radioStep % notes.length], now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                    radioStep++;
+                }, 280);
+            }
+        }
+
+        // ==========================================
+        // 3. THREE.JS SCENE & PROCEDURAL TEXTURES
+        // ==========================================
+        const container = document.getElementById('gameContainer');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x60a5fa);
+        scene.fog = new THREE.FogExp2(0x93c5fd, 0.00085);
+
+        const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.4, 2400);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.08;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x334155, 0.95);
+        scene.add(hemiLight);
+
+        const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
+        sunLight.position.set(220, 340, 180);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.set(2048, 2048);
+        sunLight.shadow.camera.near = 20;
+        sunLight.shadow.camera.far = 1100;
+        const dShadow = 320;
+        sunLight.shadow.camera.left = -dShadow;
+        sunLight.shadow.camera.right = dShadow;
+        sunLight.shadow.camera.top = dShadow;
+        sunLight.shadow.camera.bottom = -dShadow;
+        scene.add(sunLight);
+
+        function createRoadTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#1e242b';
+            ctx.fillRect(0, 0, 256, 256);
+            ctx.fillStyle = '#facc15';
+            for (let y = 10; y < 256; y += 48) {
+                ctx.fillRect(124, y, 8, 26);
+            }
+            ctx.fillStyle = 'rgba(255,255,255,0.45)';
+            ctx.fillRect(12, 0, 5, 256);
+            ctx.fillRect(239, 0, 5, 256);
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(1, 24);
+            return tex;
+        }
+
+        function createBuildingTexture(baseHex, winHex) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = baseHex;
+            ctx.fillRect(0, 0, 256, 512);
+            for (let y = 16; y < 490; y += 28) {
+                for (let x = 16; x < 236; x += 32) {
+                    const lit = ((x * 13 + y * 7) % 11) > 2;
+                    ctx.fillStyle = lit ? winHex : '#0f172a';
+                    ctx.fillRect(x, y, 18, 14);
+                }
+            }
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(1, 2);
+            return tex;
+        }
+
+        // Ground & Ocean
+        const groundGeo = new THREE.PlaneGeometry(MAP_HALF * 2.6, MAP_HALF * 2.6);
+        const groundMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -0.15;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        const oceanGeo = new THREE.PlaneGeometry(MAP_HALF * 3, 700);
+        const oceanMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.25, metalness: 0.4 });
+        const ocean = new THREE.Mesh(oceanGeo, oceanMat);
+        ocean.rotation.x = -Math.PI / 2;
+        ocean.position.set(0, -0.35, 920);
+        scene.add(ocean);
+
+        // Road Grid
+        const roadTex = createRoadTexture();
+        const roadMat = new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.85 });
+        for (let pos = -MAP_HALF + BLOCK_STEP; pos < MAP_HALF; pos += BLOCK_STEP) {
+            const hRoad = new THREE.Mesh(new THREE.PlaneGeometry(MAP_HALF * 2, ROAD_W), roadMat);
+            hRoad.rotation.x = -Math.PI / 2;
+            hRoad.position.set(0, -0.04, pos);
+            hRoad.receiveShadow = true;
+            scene.add(hRoad);
+
+            const vRoad = new THREE.Mesh(new THREE.PlaneGeometry(ROAD_W, MAP_HALF * 2), roadMat);
+            vRoad.rotation.x = -Math.PI / 2;
+            vRoad.position.set(pos, -0.04, 0);
+            vRoad.receiveShadow = true;
+            scene.add(vRoad);
+        }
+
+        // Buildings & Landmarks
+        const buildingColliders = [];
+        const bTexA = createBuildingTexture('#1e293b', '#fde68a');
+        const bTexB = createBuildingTexture('#172554', '#7dd3fc');
+
+        function addBuilding(x, z, w, d, h, tex, color = 0xffffff) {
+            const mat = new THREE.MeshStandardMaterial({ map: tex, color, roughness: 0.55, metalness: 0.2 });
+            const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+            mesh.position.set(x, h / 2, z);
+            mesh.castShadow = graphicsQuality !== 'balanced';
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+            buildingColliders.push({ x, z, hw: w / 2 + 1.2, hd: d / 2 + 1.2, h });
+            return mesh;
+        }
+
+        // Maze Bank Landmark
+        addBuilding(0, -150, 56, 56, 175, bTexB, 0x93c5fd);
+        const spire = new THREE.Mesh(
+            new THREE.ConeGeometry(12, 42, 4),
+            new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.7, roughness: 0.2 })
+        );
+        spire.position.set(0, 196, -150);
+        scene.add(spire);
+
+        // City Blocks
+        for (let gx = -600; gx <= 600; gx += BLOCK_STEP) {
+            for (let gz = -600; gz <= 450; gz += BLOCK_STEP) {
+                if (Math.abs(gx) < 80 && gz < -70 && gz > -230) continue;
+                if (Math.abs(gx) < 60 && Math.abs(gz - 45) < 40) continue;
+                const seed = Math.abs(Math.sin(gx * 12.9898 + gz * 78.233));
+                const w = 44 + (seed * 24);
+                const d = 44 + (((seed * 17) % 1) * 24);
+                const h = 28 + (((seed * 43) % 1) * 95);
+                addBuilding(gx + 75, gz + 75, w, d, h, seed > 0.5 ? bTexA : bTexB);
+            }
+        }
+
+        // Vinewood Hill & Sign Blocks
+        const hillMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.92 });
+        const hill = new THREE.Mesh(new THREE.CylinderGeometry(140, 260, 75, 24), hillMat);
+        hill.position.set(360, 37, -560);
+        hill.receiveShadow = true;
+        scene.add(hill);
+
+        const letterMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.5 });
+        for (let i = 0; i < 8; i++) {
+            const block = new THREE.Mesh(new THREE.BoxGeometry(10, 18, 5), letterMat);
+            block.position.set(275 + i * 18, 82, -520);
+            block.rotation.y = -0.22;
+            scene.add(block);
+        }
+
+        // ==========================================
+        // 4. PLAYER, CARS, TRAFFIC, POLICE & PEDS
+        // ==========================================
+        function createCharacterMesh(charData) {
+            const group = new THREE.Group();
+            const skinMat = new THREE.MeshStandardMaterial({ color: charData.skin, roughness: 0.7 });
+            const shirtMat = new THREE.MeshStandardMaterial({ color: charData.shirt, roughness: 0.65 });
+            const pantsMat = new THREE.MeshStandardMaterial({ color: charData.pants, roughness: 0.8 });
+            const hairMat = new THREE.MeshStandardMaterial({ color: charData.hair, roughness: 0.8 });
+
+            const torso = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.05, 0.4), shirtMat);
+            torso.position.y = 1.45;
+            torso.castShadow = true;
+            group.add(torso);
+
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.45), skinMat);
+            head.position.y = 2.22;
+            head.castShadow = true;
+            group.add(head);
+
+            const hair = new THREE.Mesh(new THREE.BoxGeometry(0.47, 0.16, 0.47), hairMat);
+            hair.position.y = 2.45;
+            group.add(hair);
+
+            const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.9, 0.3), pantsMat);
+            leftLeg.position.set(-0.18, 0.45, 0);
+            leftLeg.castShadow = true;
+            group.add(leftLeg);
+
+            const rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.9, 0.3), pantsMat);
+            rightLeg.position.set(0.18, 0.45, 0);
+            rightLeg.castShadow = true;
+            group.add(rightLeg);
+
+            const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.85, 0.24), shirtMat);
+            leftArm.position.set(-0.48, 1.5, 0);
+            group.add(leftArm);
+
+            const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.85, 0.24), shirtMat);
+            rightArm.position.set(0.48, 1.5, 0.15);
+            group.add(rightArm);
+
+            return { group, leftLeg, rightLeg, leftArm, rightArm };
+        }
+
+        function rebuildPlayerMesh() {
+            if (player.mesh) scene.remove(player.mesh);
+            const built = createCharacterMesh(CHARACTERS[player.charId]);
+            player.mesh = built.group;
+            player.limbs = built;
+            scene.add(player.mesh);
+        }
+
+        rebuildPlayerMesh();
+
+        const cars = [];
+        const CAR_COLORS = [0xef4444, 0x3b82f6, 0xf59e0b, 0x10b981, 0xa855f7, 0xf8fafc, 0x64748b];
+        const CAR_NAMES = ['Infernus GT', 'Comet Sport', 'Zentorno V8', 'Sultan RS', 'Elegy Custom'];
+
+        function createCar(x, z, yaw = 0, isPolice = false, colorHex = null) {
+            const group = new THREE.Group();
+            const bodyColor = isPolice ? 0xf8fafc : (colorHex || CAR_COLORS[Math.floor(Math.random() * CAR_COLORS.length)]);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: bodyColor, metalness: 0.6, roughness: 0.25 });
+            const cabinMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.85, roughness: 0.12 });
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 });
+
+            const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.78, 4.8), bodyMat);
+            chassis.position.y = 0.75;
+            chassis.castShadow = graphicsQuality !== 'balanced';
+            chassis.receiveShadow = true;
+            group.add(chassis);
+
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.62, 2.3), cabinMat);
+            cabin.position.set(0, 1.42, -0.2);
+            cabin.castShadow = graphicsQuality !== 'balanced';
+            group.add(cabin);
+
+            let sirenRed = null, sirenBlue = null;
+            if (isPolice) {
+                const blackDoor = new THREE.Mesh(
+                    new THREE.BoxGeometry(2.34, 0.65, 1.6),
+                    new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.5 })
+                );
+                blackDoor.position.set(0, 0.76, 0.1);
+                group.add(blackDoor);
+
+                sirenRed = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.2, 0.35), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+                sirenRed.position.set(-0.35, 1.82, -0.2);
+                group.add(sirenRed);
+
+                sirenBlue = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.2, 0.35), new THREE.MeshBasicMaterial({ color: 0x3b82f6 }));
+                sirenBlue.position.set(0.35, 1.82, -0.2);
+                group.add(sirenBlue);
+            }
+
+            const wheelPositions = [
+                [-1.18, 0.42, 1.45],
+                [1.18, 0.42, 1.45],
+                [-1.18, 0.42, -1.45],
+                [1.18, 0.42, -1.45]
+            ];
+            wheelPositions.forEach(([wx, wy, wz]) => {
+                const w = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.32, 14), wheelMat);
+                w.rotation.z = Math.PI / 2;
+                w.position.set(wx, wy, wz);
+                group.add(w);
+            });
+
+            group.position.set(x, 0, z);
+            group.rotation.y = yaw;
+            scene.add(group);
+
+            const carObj = {
+                name: isPolice ? 'LSPD Cruiser' : CAR_NAMES[Math.floor(Math.random() * CAR_NAMES.length)],
+                x,
+                y: 0,
+                z,
+                yaw,
+                speed: 0,
+                hp: 100,
+                isPolice,
+                mesh: group,
+                sirenRed,
+                sirenBlue,
+                aiTimer: 1 + Math.random() * 2
+            };
+            cars.push(carObj);
+            return carObj;
+        }
+
+        // Spawn initial vehicles
+        createCar(12, 52, 0, false, 0x10b981);
+        createCar(-14, 28, Math.PI / 2, false, 0xef4444);
+        for (let i = 0; i < 16; i++) {
+            const rx = (Math.floor((Math.random() * 7) - 3)) * BLOCK_STEP;
+            const rz = (Math.floor((Math.random() * 7) - 3)) * BLOCK_STEP;
+            createCar(rx, rz, Math.random() * Math.PI * 2, false);
+        }
+
+        // Pedestrians & Enemies
+        const peds = [];
+        const projectiles = [];
+        const explosions = [];
+
+        function spawnPed(x, z, hostile = false) {
+            const charStyle = hostile
+                ? { shirt: 0x1d4ed8, pants: 0x0f172a, skin: 0xfed7aa, hair: 0x111827 }
+                : {
+                    shirt: CAR_COLORS[Math.floor(Math.random() * CAR_COLORS.length)],
+                    pants: 0x1e293b,
+                    skin: Math.random() > 0.5 ? 0xfed7aa : 0x8d5524,
+                    hair: 0x1f2937
+                };
+            const built = createCharacterMesh(charStyle);
+            built.group.position.set(x, 0, z);
+            scene.add(built.group);
+            const ped = {
+                x,
+                y: 0,
+                z,
+                yaw: Math.random() * Math.PI * 2,
+                hp: hostile ? 70 : 45,
+                hostile,
+                shootCd: 1 + Math.random() * 1.5,
+                moveTimer: 1 + Math.random() * 2,
+                walk: 0,
+                mesh: built.group,
+                limbs: built
+            };
+            peds.push(ped);
+            return ped;
+        }
+
+        for (let i = 0; i < 18; i++) {
+            spawnPed((Math.random() - 0.5) * 500, (Math.random() - 0.5) * 500, false);
+        }
+
+        // ==========================================
+        // 5. MISSIONS SYSTEM (iFRUIT)
+        // ==========================================
+        const MISSIONS = [
+            {
+                id: 1,
+                title: 'سرقة بنك Maze',
+                desc: 'توجّه إلى نقطة السطو الأولى ثم اجمع الحقائب.',
+                reward: 4500,
+                targetX: 0,
+                targetZ: -110,
+                goalCount: 2
+            },
+            {
+                id: 2,
+                title: 'سباق شوارع لوس سانتوس',
+                desc: 'اعبر نقاط التفتيش السريعة بأقصى سرعة.',
+                reward: 3500,
+                targetX: 150,
+                targetZ: 150,
+                goalCount: 2
+            },
+            {
+                id: 3,
+                title: 'تصفية عصابة التلال',
+                desc: 'واجه العناصر المعادية قرب تلال Vinewood.',
+                reward: 6000,
+                targetX: 300,
+                targetZ: -450,
+                goalCount: 3
+            },
+            {
+                id: 4,
+                title: 'هروب من المطاردة',
+                desc: 'توجّه إلى نقطة الأمان الساحلية لإتمام العملية.',
+                reward: 5000,
+                targetX: -300,
+                targetZ: 450,
+                goalCount: 1
+            }
+        ];
+
+        let activeMission = null;
+        let missionProgress = 0;
+        const completedMissions = new Set();
+
+        const markerMesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(4.5, 4.5, 0.4, 24),
+            new THREE.MeshBasicMaterial({ color: 0xfacc15, transparent: true, opacity: 0.75 })
+        );
+        markerMesh.visible = false;
+        scene.add(markerMesh);
+
+        function renderMissionList() {
+            const container = document.getElementById('missionListContainer');
+            container.innerHTML = '';
+            MISSIONS.forEach((m) => {
+                const done = completedMissions.has(m.id);
+                const card = document.createElement('div');
+                card.className = 'p-4 rounded-2xl border border-white/15 bg-white/5 flex flex-col justify-between gap-3';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-black text-base text-white">${m.title}</span>
+                            <span class="gta-num text-xs px-2 py-0.5 rounded-lg ${done ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">${done ? 'مكتملة ✓' : '+$' + m.reward}</span>
+                        </div>
+                        <p class="text-xs text-gray-300 mt-1">${m.desc}</p>
+                    </div>
+                    <button data-mission-id="${m.id}" class="start-mission-btn w-full py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black text-xs cursor-pointer">
+                        بدء المهمة ▶
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+            document.getElementById('completedCountText').textContent = `${completedMissions.size} / ${MISSIONS.length}`;
+            document.getElementById('cancelMissionBtn').classList.toggle('hidden', !activeMission);
+        }
+
+        function startMission(id) {
+            const m = MISSIONS.find((item) => item.id === Number(id));
+            if (!m) return;
+            activeMission = m;
+            missionProgress = 0;
+            markerMesh.visible = true;
+            markerMesh.position.set(m.targetX, 0.25, m.targetZ);
+            if (m.id === 3) {
+                for (let i = 0; i < 3; i++) {
+                    spawnPed(m.targetX + (i - 1) * 10, m.targetZ + 8, true);
+                }
+            }
+            document.getElementById('activeMissionHud').classList.remove('hidden');
+            document.getElementById('hudMissionTitle').textContent = m.title;
+            document.getElementById('hudMissionDesc').textContent = m.desc;
+            document.getElementById('hudMissionProgress').textContent = `التقدم: 0 / ${m.goalCount}`;
+            document.getElementById('phoneModal').classList.add('hidden');
+            isPaused = false;
+            showBanner('بدأت المهمة', m.title, `المكافأة: +$${m.reward}`);
+        }
+
+        function completeMission() {
+            if (!activeMission) return;
+            const reward = activeMission.reward;
+            player.cash += reward;
+            completedMissions.add(activeMission.id);
+            showBanner('تم إنجاز المهمة', 'MISSION PASSED', `+$${reward.toLocaleString()}`);
+            activeMission = null;
+            missionProgress = 0;
+            markerMesh.visible = false;
+            document.getElementById('activeMissionHud').classList.add('hidden');
+            updateHud();
+        }
+
+        function showBanner(sub, title, reward) {
+            const el = document.getElementById('missionBanner');
+            document.getElementById('bannerSub').textContent = sub;
+            document.getElementById('bannerTitle').textContent = title;
+            document.getElementById('bannerReward').textContent = reward;
+            el.classList.remove('hidden', 'mission-slam');
+            void el.offsetWidth;
+            el.classList.add('mission-slam');
+            setTimeout(() => el.classList.add('hidden'), 4500);
+        }
+
+        function triggerMidGamePoliceAlert() {
+            midGameEscalationTriggered = true;
+            player.wanted = Math.max(player.wanted, 2);
+            player.wantedHeat = Math.max(player.wantedHeat, 45);
+            playAlertSound();
+            const alertEl = document.getElementById('policeAlertBanner');
+            alertEl.classList.remove('hidden', 'police-alert-anim');
+            void alertEl.offsetWidth;
+            alertEl.classList.add('police-alert-anim');
+            setTimeout(() => alertEl.classList.add('hidden'), 4600);
+
+            for (let i = 0; i < 3; i++) {
+                const angle = (i / 3) * Math.PI * 2;
+                const px = player.x + Math.cos(angle) * 65;
+                const pz = player.z + Math.sin(angle) * 65;
+                createCar(px, pz, angle, true);
+                spawnPed(px + 3, pz + 3, true);
+            }
+            updateHud();
+        }
+
+        // ==========================================
+        // 6. COMBAT, EXPLOSIONS & COLLISIONS
+        // ==========================================
+        function fireWeapon() {
+            if (!gameStarted || introActive || isPaused || player.shootCooldown > 0) return;
+            const w = WEAPONS[player.weapon];
+            if (player.weapon === 3 && player.rockets <= 0) return;
+
+            player.shootCooldown = w.cooldown;
+            if (player.weapon === 3) player.rockets--;
+
+            playShotSound(player.weapon);
+            screenShake = Math.max(screenShake, player.weapon === 3 ? 0.5 : 0.14);
+
+            const origin = player.inCar
+                ? new THREE.Vector3(player.inCar.x, 1.6, player.inCar.z)
+                : new THREE.Vector3(player.x, 1.6, player.z);
+
+            const dir = new THREE.Vector3();
+            camera.getWorldDirection(dir);
+            dir.x += (Math.random() - 0.5) * w.spread;
+            dir.y += (Math.random() - 0.5) * w.spread;
+            dir.z += (Math.random() - 0.5) * w.spread;
+            dir.normalize();
+
+            const bulletMesh = new THREE.Mesh(
+                new THREE.SphereGeometry(w.explosive ? 0.35 : 0.12, 8, 8),
+                new THREE.MeshBasicMaterial({ color: w.explosive ? 0xf97316 : 0xfef08a })
+            );
+            bulletMesh.position.copy(origin).addScaledVector(dir, 1.5);
+            scene.add(bulletMesh);
+
+            projectiles.push({
+                mesh: bulletMesh,
+                pos: bulletMesh.position,
+                vel: dir.multiplyScalar(w.speed),
+                dmg: w.dmg * CHARACTERS[player.charId].dmgMult,
+                explosive: w.explosive,
+                fromPlayer: true,
+                life: 1.6
+            });
+
+            player.wantedHeat += 8;
+            if (player.wantedHeat >= 35 && player.wanted < 4) {
+                player.wanted++;
+                player.wantedHeat = 0;
+            }
+            updateHud();
+        }
+
+        function createExplosion(pos, radius = 14, dmg = 120) {
+            playExplosionSound();
+            screenShake = Math.max(screenShake, 0.85);
+            const ring = new THREE.Mesh(
+                new THREE.SphereGeometry(1.2, 16, 16),
+                new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.9 })
+            );
+            ring.position.copy(pos);
+            scene.add(ring);
+            explosions.push({ mesh: ring, scale: 1, maxScale: radius * 0.65, life: 0.45 });
+
+            peds.forEach((ped) => {
+                if (ped.hp > 0 && Math.hypot(ped.x - pos.x, ped.z - pos.z) <= radius) {
+                    ped.hp -= dmg;
+                }
+            });
+
+            cars.forEach((car) => {
+                if (car !== player.inCar && Math.hypot(car.x - pos.x, car.z - pos.z) <= radius) {
+                    car.hp -= dmg * 0.7;
+                }
+            });
+        }
+
+        function damagePlayer(amount) {
+            if (player.invuln > 0 || player.specialActive) return;
+            let rem = amount;
+            if (player.armor > 0) {
+                const absorbed = Math.min(player.armor, rem * 0.65);
+                player.armor = Math.max(0, player.armor - absorbed);
+                rem -= absorbed;
+            }
+            player.hp = Math.max(0, player.hp - rem);
+            player.invuln = 0.25;
+            updateHud();
+
+            if (player.hp <= 0) {
+                isPaused = true;
+                player.cash = Math.max(0, player.cash - 500);
+                player.wanted = 0;
+                player.wantedHeat = 0;
+                document.getElementById('finalCashText').textContent = `$${player.cash.toLocaleString()}`;
+                document.getElementById('wastedOverlay').classList.remove('hidden');
+                updateHud();
+            }
+        }
+
+        function resolveBuildingCollision(x, z, radius = 1.1) {
+            let nx = x, nz = z;
+            for (const b of buildingColliders) {
+                const dx = nx - b.x;
+                const dz = nz - b.z;
+                const px = (b.hw + radius) - Math.abs(dx);
+                const pz = (b.hd + radius) - Math.abs(dz);
+                if (px > 0 && pz > 0) {
+                    if (px < pz) {
+                        nx += dx >= 0 ? px : -px;
+                    } else {
+                        nz += dz >= 0 ? pz : -pz;
+                    }
+                }
+            }
+            return { x: nx, z: nz };
+        }
+
+        // ==========================================
+        // 7. HUD & CONTROLS
+        // ==========================================
+        function updateHud() {
+            document.getElementById('cashDisplay').textContent = `$${String(player.cash).padStart(8, '0')}`;
+            document.getElementById('charBadgeName').textContent = CHARACTERS[player.charId].name;
+            document.getElementById('hpText').textContent = Math.ceil(player.hp);
+            document.getElementById('hpBar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+            document.getElementById('armorText').textContent = Math.ceil(player.armor);
+            document.getElementById('armorBar').style.width = `${(player.armor / player.maxArmor) * 100}%`;
+            document.getElementById('specialPct').textContent = Math.floor(player.special);
+
+            const hrs = String(Math.floor(gameMinutes / 60) % 24).padStart(2, '0');
+            const mins = String(Math.floor(gameMinutes % 60)).padStart(2, '0');
+            document.getElementById('gameClockText').textContent = `${hrs}:${mins}`;
+
+            document.querySelectorAll('#starsContainer span').forEach((starEl) => {
+                const idx = Number(starEl.dataset.star);
+                starEl.className = idx <= player.wanted ? 'star-active' : 'star-inactive';
+            });
+
+            const w = WEAPONS[player.weapon];
+            document.getElementById('ammoDisplay').textContent =
+                player.weapon === 3 ? `السلاح: ${w.name} | صواريخ RPG: ${player.rockets}` : `السلاح: ${w.name} | الذخيرة: ∞`;
+
+            const carBox = document.getElementById('carHealthBox');
+            if (player.inCar) {
+                carBox.classList.remove('hidden');
+                carBox.classList.add('flex');
+                document.getElementById('carNameLabel').textContent = player.inCar.name;
+                document.getElementById('carSpeedText').textContent = `${Math.abs(Math.round(player.inCar.speed * 3.6))} KM/H`;
+                document.getElementById('carHealthBar').style.width = `${Math.max(0, player.inCar.hp)}%`;
+            } else {
+                carBox.classList.add('hidden');
+                carBox.classList.remove('flex');
+            }
+
+            const distEl = document.getElementById('districtName');
+            if (player.z > 550) distEl.textContent = 'شاطئ فيسبوتشي والمحيط';
+            else if (player.z < -320) distEl.textContent = 'تلال ولافتة VINEWOOD';
+            else distEl.textContent = 'وسط المدينة - برج Maze Bank';
+        }
+
+        function setCharacter(id) {
+            const prevChar = CHARACTERS[player.charId];
+            player.charId = Number(id);
+            const nextChar = CHARACTERS[player.charId];
+            player.armor = Math.min(player.maxArmor, Math.max(0, player.armor - prevChar.armorBonus + nextChar.armorBonus));
+            rebuildPlayerMesh();
+            document.getElementById('charModal').classList.add('hidden');
+            isPaused = false;
+            updateHud();
+        }
+
+        function activateSpecialAbility() {
+            if (player.special < 25 || player.specialActive) return;
+            player.specialActive = true;
+            player.specialTimer = 5.0;
+            document.getElementById('specialVignette').style.opacity = '1';
+            if (player.inCar && player.charId === 1) {
+                player.inCar.speed += 18;
+            }
+        }
+
+        function applyTimePreset(presetIdx) {
+            timePreset = presetIdx % 3;
+            const btn = document.getElementById('timeCycleBtn');
+            if (timePreset === 0) {
+                gameMinutes = 14 * 60 + 30;
+                scene.background = new THREE.Color(0x60a5fa);
+                scene.fog.color.setHex(0x93c5fd);
+                sunLight.color.setHex(0xfffbeb);
+                sunLight.intensity = 1.45;
+                hemiLight.intensity = 0.95;
+                btn.textContent = '☀️ الوقت: نهار';
+            } else if (timePreset === 1) {
+                gameMinutes = 18 * 60 + 45;
+                scene.background = new THREE.Color(0xf97316);
+                scene.fog.color.setHex(0xfdba74);
+                sunLight.color.setHex(0xfb923c);
+                sunLight.intensity = 1.15;
+                hemiLight.intensity = 0.7;
+                btn.textContent = '🌅 الوقت: غروب';
+            } else {
+                gameMinutes = 23 * 60 + 15;
+                scene.background = new THREE.Color(0x090d16);
+                scene.fog.color.setHex(0x0f172a);
+                sunLight.color.setHex(0x93c5fd);
+                sunLight.intensity = 0.45;
+                hemiLight.intensity = 0.35;
+                btn.textContent = '🌙 الوقت: ليل';
+            }
+            updateHud();
+        }
+
+        function enterGameplay() {
+            introActive = false;
+            gameStarted = true;
+            isPaused = false;
+            document.getElementById('startOverlay').classList.add('hidden');
+            updateHud();
+        }
+
+        // Event Listeners
+        document.getElementById('startGameBtn').addEventListener('click', enterGameplay);
+        document.getElementById('skipIntroBtn').addEventListener('click', enterGameplay);
+
+        document.querySelectorAll('.qual-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                graphicsQuality = btn.dataset.qual;
+                document.querySelectorAll('.qual-btn').forEach((b) => {
+                    b.className = 'qual-btn px-3.5 py-1.5 rounded-xl bg-white/10 text-gray-200 font-bold cursor-pointer';
+                });
+                btn.className = 'qual-btn px-3.5 py-1.5 rounded-xl bg-emerald-500 text-gray-950 font-black cursor-pointer';
+                renderer.shadowMap.enabled = graphicsQuality !== 'balanced';
+                renderer.setPixelRatio(graphicsQuality === 'ultra' ? Math.min(window.devicePixelRatio, 2) : 1);
+            });
+        });
+
+        document.getElementById('openPhoneBtn').addEventListener('click', () => {
+            if (!gameStarted || introActive) return;
+            renderMissionList();
+            document.getElementById('phoneModal').classList.remove('hidden');
+            isPaused = true;
+        });
+        document.getElementById('closePhoneBtn').addEventListener('click', () => {
+            document.getElementById('phoneModal').classList.add('hidden');
+            isPaused = false;
+        });
+        document.getElementById('cancelMissionBtn').addEventListener('click', () => {
+            activeMission = null;
+            missionProgress = 0;
+            markerMesh.visible = false;
+            document.getElementById('activeMissionHud').classList.add('hidden');
+            document.getElementById('phoneModal').classList.add('hidden');
+            isPaused = false;
+        });
+        document.getElementById('missionListContainer').addEventListener('click', (e) => {
+            const btn = e.target.closest('.start-mission-btn');
+            if (btn) startMission(btn.dataset.missionId);
+        });
+
+        document.getElementById('openCharWheelBtn').addEventListener('click', () => {
+            if (!gameStarted || introActive) return;
+            document.getElementById('charModal').classList.remove('hidden');
+            isPaused = true;
+        });
+        document.getElementById('closeCharBtn').addEventListener('click', () => {
+            document.getElementById('charModal').classList.add('hidden');
+            isPaused = false;
+        });
+        document.querySelectorAll('.char-card').forEach((card) => {
+            card.addEventListener('click', () => setCharacter(card.dataset.char));
+        });
+
+        document.getElementById('timeCycleBtn').addEventListener('click', () => applyTimePreset(timePreset + 1));
+        document.getElementById('radioToggleBtn').addEventListener('click', toggleRadio);
+        document.getElementById('soundToggleBtn').addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+        });
+        document.getElementById('helpToggleBtn').addEventListener('click', () => {
+            document.getElementById('controlsCard').classList.toggle('hidden');
+        });
+        document.getElementById('specialAbilityBtn').addEventListener('click', activateSpecialAbility);
+
+        document.querySelectorAll('.weapon-slot').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                player.weapon = Number(btn.dataset.weapon);
+                document.querySelectorAll('.weapon-slot').forEach((b) => {
+                    b.className = 'weapon-slot px-2 py-1 rounded-lg text-[11px] font-bold bg-white/10 text-gray-200 hover:bg-white/20 transition cursor-pointer';
+                });
+                btn.className = 'weapon-slot px-2 py-1 rounded-lg text-[11px] font-bold bg-white text-gray-950 transition cursor-pointer';
+                updateHud();
+            });
+        });
+
+        document.getElementById('respawnBtn').addEventListener('click', () => {
+            player.hp = player.maxHp;
+            player.armor = CHARACTERS[player.charId].armorBonus;
+            player.x = 0;
+            player.z = 45;
+            player.inCar = null;
+            document.getElementById('wastedOverlay').classList.add('hidden');
+            isPaused = false;
+            updateHud();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.code] = true;
+            if (introActive && (e.code === 'Space' || e.code === 'Enter')) {
+                e.preventDefault();
+                enterGameplay();
+                return;
+            }
+            if (!gameStarted || introActive) return;
+
+            if (e.code === 'KeyM') {
+                const modal = document.getElementById('phoneModal');
+                const open = modal.classList.contains('hidden');
+                if (open) renderMissionList();
+                modal.classList.toggle('hidden', !open);
+                isPaused = open;
+            } else if (e.code === 'Tab') {
+                e.preventDefault();
+                const modal = document.getElementById('charModal');
+                const open = modal.classList.contains('hidden');
+                modal.classList.toggle('hidden', !open);
+                isPaused = open;
+            } else if (e.code === 'KeyQ') {
+                activateSpecialAbility();
+            } else if (e.code === 'KeyV') {
+                cameraMode = (cameraMode + 1) % 3;
+            } else if (e.code === 'KeyF') {
+                fireWeapon();
+            } else if (e.code === 'KeyE') {
+                if (player.inCar) {
+                    player.x = player.inCar.x + Math.cos(player.inCar.yaw) * 2.5;
+                    player.z = player.inCar.z - Math.sin(player.inCar.yaw) * 2.5;
+                    player.inCar = null;
+                    updateHud();
+                } else {
+                    let nearest = null;
+                    let bestDist = 6.5;
+                    for (const car of cars) {
+                        const dist = Math.hypot(car.x - player.x, car.z - player.z);
+                        if (dist < bestDist) {
+                            bestDist = dist;
+                            nearest = car;
+                        }
+                    }
+                    if (nearest) {
+                        player.inCar = nearest;
+                        if (nearest.isPolice) {
+                            player.wanted = Math.max(player.wanted, 2);
+                        }
+                        updateHud();
+                    }
+                }
+            } else if (['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code)) {
+                const idx = Number(e.code.replace('Digit', '')) - 1;
+                const slotBtn = document.querySelector(`.weapon-slot[data-weapon="${idx}"]`);
+                if (slotBtn) slotBtn.click();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+        });
+
+        container.addEventListener('mousedown', (e) => {
+            if (e.button === 0) {
+                mouseDownLeft = true;
+                fireWeapon();
+            } else if (e.button === 2) {
+                isDraggingCamera = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            }
+        });
+        container.addEventListener('contextmenu', (e) => e.preventDefault());
+        window.addEventListener('mousemove', (e) => {
+            if (!isDraggingCamera) return;
+            const dx = e.clientX - lastMouseX;
+            const dy = e.clientY - lastMouseY;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            camYaw -= dx * 0.0055;
+            camPitch = Math.max(0.08, Math.min(0.85, camPitch + dy * 0.0045));
+        });
+        window.addEventListener('mouseup', (e) => {
+            if (e.button === 0) mouseDownLeft = false;
+            if (e.button === 2) isDraggingCamera = false;
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ==========================================
+        // 8. MAIN SIMULATION & RENDER LOOP
+        // ==========================================
+        let prevTime = performance.now();
+
+        function animate(now) {
+            requestAnimationFrame(animate);
+            const rawDt = Math.min(0.05, (now - prevTime) / 1000);
+            prevTime = now;
+
+            const timeScale = player.specialActive && player.charId === 0 ? 0.45 : 1.0;
+            const dt = rawDt * timeScale;
+
+            // Animate Ocean
+            ocean.position.y = -0.35 + Math.sin(now * 0.0018) * 0.14;
+
+            // Intro Cinematic Mode
+            if (introActive) {
+                introTime += rawDt;
+                const angle = introTime * 0.18;
+                const radius = 260;
+                camera.position.set(Math.sin(angle) * radius, 95 + Math.sin(introTime * 0.5) * 18, -140 + Math.cos(angle) * radius);
+                camera.lookAt(0, 45, -150);
+
+                const sceneLabel = document.getElementById('introSceneLabel');
+                if (introTime % 18 < 6) {
+                    sceneLabel.textContent = 'مشهد الانترو: برج Maze Bank ووسط لوس سانتوس';
+                } else if (introTime % 18 < 12) {
+                    sceneLabel.textContent = 'مشهد الانترو: تلال ولافتة VINEWOOD';
+                } else {
+                    sceneLabel.textContent = 'مشهد الانترو: شاطئ فيسبوتشي والمحيط';
+                }
+                renderer.render(scene, camera);
+                return;
+            }
+
+            if (!isPaused && gameStarted) {
+                gameplayElapsed += rawDt;
+                gameMinutes = (gameMinutes + rawDt * 1.2) % (24 * 60);
+
+                if (!midGameEscalationTriggered && gameplayElapsed >= 35) {
+                    triggerMidGamePoliceAlert();
+                }
+
+                if (player.shootCooldown > 0) player.shootCooldown -= rawDt;
+                if (player.invuln > 0) player.invuln -= rawDt;
+                if (mouseDownLeft && player.weapon === 1) fireWeapon();
+
+                if (player.specialActive) {
+                    player.specialTimer -= rawDt;
+                    player.special = Math.max(0, player.special - rawDt * 20);
+                    if (player.specialTimer <= 0 || player.special <= 0) {
+                        player.specialActive = false;
+                        document.getElementById('specialVignette').style.opacity = '0';
+                    }
+                } else {
+                    player.special = Math.min(100, player.special + rawDt * 4);
+                }
+
+                const forwardInput = (keys['KeyW'] || keys['ArrowUp'] ? 1 : 0) - (keys['KeyS'] || keys['ArrowDown'] ? 1 : 0);
+                const turnInput = (keys['KeyA'] || keys['ArrowLeft'] ? 1 : 0) - (keys['KeyD'] || keys['ArrowRight'] ? 1 : 0);
+                const sprint = keys['ShiftLeft'] || keys['ShiftRight'];
+
+                if (player.inCar) {
+                    const car = player.inCar;
+                    const boost = sprint ? 1.45 : (player.specialActive && player.charId === 1 ? 1.65 : 1.0);
+                    if (forwardInput !== 0) {
+                        car.speed += forwardInput * 36 * boost * dt;
+                    } else {
+                        car.speed *= Math.pow(0.25, dt);
+                    }
+                    car.speed = Math.max(-18, Math.min(52 * boost, car.speed));
+                    if (Math.abs(car.speed) > 0.6) {
+                        car.yaw += turnInput * 2.2 * dt * (car.speed >= 0 ? 1 : -1);
+                    }
+                    car.x += Math.sin(car.yaw) * car.speed * dt;
+                    car.z += Math.cos(car.yaw) * car.speed * dt;
+                    const col = resolveBuildingCollision(car.x, car.z, 2.4);
+                    car.x = col.x;
+                    car.z = col.z;
+                    car.mesh.position.set(car.x, 0, car.z);
+                    car.mesh.rotation.y = car.yaw;
+
+                    player.x = car.x;
+                    player.z = car.z;
+                    player.yaw = car.yaw;
+                    player.mesh.visible = false;
+                    document.getElementById('actionPrompt').classList.add('hidden');
+                } else {
+                    player.mesh.visible = true;
+                    const moveSpeed = (sprint ? 14.5 : 8.2) * CHARACTERS[player.charId].speedMult * (player.specialActive && player.charId === 0 ? 1.35 : 1.0);
+                    if (turnInput !== 0) {
+                        player.yaw += turnInput * 2.8 * dt;
+                    }
+                    if (forwardInput !== 0) {
+                        player.x += Math.sin(player.yaw) * forwardInput * moveSpeed * dt;
+                        player.z += Math.cos(player.yaw) * forwardInput * moveSpeed * dt;
+                        player.walkCycle += dt * (sprint ? 16 : 10);
+                    } else {
+                        player.walkCycle = 0;
+                    }
+                    const col = resolveBuildingCollision(player.x, player.z, 0.9);
+                    player.x = col.x;
+                    player.z = col.z;
+                    player.mesh.position.set(player.x, 0, player.z);
+                    player.mesh.rotation.y = player.yaw;
+
+                    const swing = Math.sin(player.walkCycle) * 0.65;
+                    player.limbs.leftLeg.rotation.x = swing;
+                    player.limbs.rightLeg.rotation.x = -swing;
+                    player.limbs.leftArm.rotation.x = -swing * 0.7;
+                    player.limbs.rightArm.rotation.x = swing * 0.7;
+
+                    // Check nearby car prompt
+                    let nearCar = false;
+                    for (const car of cars) {
+                        if (Math.hypot(car.x - player.x, car.z - player.z) < 6.5) {
+                            nearCar = true;
+                            break;
+                        }
+                    }
+                    document.getElementById('actionPrompt').classList.toggle('hidden', !nearCar);
+                }
+
+                // Update Cars AI & Police Sirens
+                for (const car of cars) {
+                    if (car.isPolice) {
+                        const flash = Math.sin(now * 0.02) > 0;
+                        if (car.sirenRed) car.sirenRed.material.color.setHex(flash ? 0xff0000 : 0x330000);
+                        if (car.sirenBlue) car.sirenBlue.material.color.setHex(!flash ? 0x0066ff : 0x001133);
+                    }
+                    if (car === player.inCar) continue;
+
+                    if (car.isPolice && player.wanted > 0) {
+                        const dx = player.x - car.x;
+                        const dz = player.z - car.z;
+                        const dist = Math.hypot(dx, dz);
+                        const targetYaw = Math.atan2(dx, dz);
+                        car.yaw = targetYaw;
+                        car.speed = dist > 14 ? 24 : 8;
+                        car.x += Math.sin(car.yaw) * car.speed * dt;
+                        car.z += Math.cos(car.yaw) * car.speed * dt;
+                        if (dist < 4.5) damagePlayer(18 * dt);
+                    } else {
+                        car.aiTimer -= dt;
+                        if (car.aiTimer <= 0) {
+                            car.aiTimer = 1.5 + Math.random() * 2.5;
+                            car.yaw += (Math.random() - 0.5) * 1.4;
+                        }
+                        car.speed = 11;
+                        car.x += Math.sin(car.yaw) * car.speed * dt;
+                        car.z += Math.cos(car.yaw) * car.speed * dt;
+                    }
+                    const cCol = resolveBuildingCollision(car.x, car.z, 2.3);
+                    car.x = cCol.x;
+                    car.z = cCol.z;
+                    car.mesh.position.set(car.x, 0, car.z);
+                    car.mesh.rotation.y = car.yaw;
+                }
+
+                // Update Peds
+                for (let i = peds.length - 1; i >= 0; i--) {
+                    const ped = peds[i];
+                    if (ped.hp <= 0) {
+                        scene.remove(ped.mesh);
+                        peds.splice(i, 1);
+                        if (activeMission && activeMission.id === 3) {
+                            missionProgress++;
+                            document.getElementById('hudMissionProgress').textContent = `التقدم: ${missionProgress} / ${activeMission.goalCount}`;
+                            if (missionProgress >= activeMission.goalCount) completeMission();
+                        }
+                        continue;
+                    }
+                    const dx = player.x - ped.x;
+                    const dz = player.z - ped.z;
+                    const dist = Math.hypot(dx, dz);
+                    if (ped.hostile && dist < 55) {
+                        ped.yaw = Math.atan2(dx, dz);
+                        if (dist > 14) {
+                            ped.x += Math.sin(ped.yaw) * 6.5 * dt;
+                            ped.z += Math.cos(ped.yaw) * 6.5 * dt;
+                        }
+                        ped.shootCd -= dt;
+                        if (ped.shootCd <= 0 && dist < 42) {
+                            ped.shootCd = 1.4;
+                            const dir = new THREE.Vector3(dx, 0.3, dz).normalize();
+                            const bMesh = new THREE.Mesh(
+                                new THREE.SphereGeometry(0.12, 6, 6),
+                                new THREE.MeshBasicMaterial({ color: 0xf87171 })
+                            );
+                            bMesh.position.set(ped.x, 1.5, ped.z);
+                            scene.add(bMesh);
+                            projectiles.push({
+                                mesh: bMesh,
+                                pos: bMesh.position,
+                                vel: dir.multiplyScalar(65),
+                                dmg: 10,
+                                explosive: false,
+                                fromPlayer: false,
+                                life: 1.5
+                            });
+                        }
+                    } else {
+                        ped.moveTimer -= dt;
+                        if (ped.moveTimer <= 0) {
+                            ped.moveTimer = 1.5 + Math.random() * 2;
+                            ped.yaw += (Math.random() - 0.5) * 2;
+                        }
+                        ped.x += Math.sin(ped.yaw) * 3.2 * dt;
+                        ped.z += Math.cos(ped.yaw) * 3.2 * dt;
+                    }
+                    ped.walk += dt * 8;
+                    ped.limbs.leftLeg.rotation.x = Math.sin(ped.walk) * 0.5;
+                    ped.limbs.rightLeg.rotation.x = -Math.sin(ped.walk) * 0.5;
+                    ped.mesh.position.set(ped.x, 0, ped.z);
+                    ped.mesh.rotation.y = ped.yaw;
+                }
+
+                // Update Projectiles
+                for (let i = projectiles.length - 1; i >= 0; i--) {
+                    const p = projectiles[i];
+                    p.life -= dt;
+                    p.pos.addScaledVector(p.vel, dt);
+                    if (p.life <= 0 || p.pos.y <= 0.1) {
+                        if (p.explosive) createExplosion(p.pos);
+                        scene.remove(p.mesh);
+                        projectiles.splice(i, 1);
+                        continue;
+                    }
+
+                    if (p.fromPlayer) {
+                        for (const ped of peds) {
+                            if (ped.hp > 0 && Math.hypot(ped.x - p.pos.x, ped.z - p.pos.z) < 1.3 && Math.abs(p.pos.y - 1.4) < 1.4) {
+                                ped.hp -= p.dmg;
+                                if (p.explosive) createExplosion(p.pos);
+                                scene.remove(p.mesh);
+                                projectiles.splice(i, 1);
+                                break;
+                            }
+                        }
+                    } else {
+                        if (Math.hypot(player.x - p.pos.x, player.z - p.pos.z) < 1.2) {
+                            damagePlayer(p.dmg);
+                            scene.remove(p.mesh);
+                            projectiles.splice(i, 1);
+                        }
+                    }
+                }
+
+                // Update Explosions
+                for (let i = explosions.length - 1; i >= 0; i--) {
+                    const ex = explosions[i];
+                    ex.life -= dt;
+                    ex.scale += dt * 24;
+                    ex.mesh.scale.setScalar(ex.scale);
+                    ex.mesh.material.opacity = Math.max(0, ex.life / 0.45);
+                    if (ex.life <= 0) {
+                        scene.remove(ex.mesh);
+                        explosions.splice(i, 1);
+                    }
+                }
+
+                // Active Mission Objective Check
+                if (activeMission && activeMission.id !== 3) {
+                    markerMesh.rotation.y += dt * 2.5;
+                    const distToTarget = Math.hypot(activeMission.targetX - player.x, activeMission.targetZ - player.z);
+                    document.getElementById('hudMissionDistance').textContent = `المسافة: ${Math.round(distToTarget)} متر`;
+                    if (distToTarget < 7.5) {
+                        missionProgress++;
+                        document.getElementById('hudMissionProgress').textContent = `التقدم: ${missionProgress} / ${activeMission.goalCount}`;
+                        if (missionProgress >= activeMission.goalCount) {
+                            completeMission();
+                        } else {
+                            activeMission.targetX += 110;
+                            activeMission.targetZ -= 90;
+                            markerMesh.position.set(activeMission.targetX, 0.25, activeMission.targetZ);
+                        }
+                    }
+                }
+
+                // Camera Follow
+                const distBack = cameraMode === 1 ? 16 : (player.inCar ? 10.5 : 7.5);
+                const heightCam = cameraMode === 2 ? 2.4 : (player.inCar ? 4.4 : 3.6);
+                const totalYaw = player.yaw + camYaw;
+                const desiredX = player.x - Math.sin(totalYaw) * distBack;
+                const desiredZ = player.z - Math.cos(totalYaw) * distBack;
+                const desiredY = heightCam + Math.sin(camPitch) * distBack * 0.45;
+
+                if (screenShake > 0) screenShake = Math.max(0, screenShake - rawDt * 1.8);
+                const shakeX = (Math.random() - 0.5) * screenShake;
+                const shakeY = (Math.random() - 0.5) * screenShake;
+
+                camera.position.lerp(new THREE.Vector3(desiredX + shakeX, desiredY + shakeY, desiredZ), 1 - Math.pow(0.001, rawDt));
+                camera.lookAt(player.x + Math.sin(player.yaw) * 3, 1.6, player.z + Math.cos(player.yaw) * 3);
+
+                sunLight.position.set(player.x + 180, 280, player.z + 150);
+                sunLight.target.position.set(player.x, 0, player.z);
+                sunLight.target.updateMatrixWorld();
+
+                updateHud();
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
 </body>
 </html>
